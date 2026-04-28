@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Win rate discovery · EXEC8</title>
-<meta name="description" content="Discover your real win rate, R-multiple, and Kelly sizing. Free tool, no signup. Built by EXEC8.">
+<title>Kelly tracker · EXEC8</title>
+<meta name="description" content="Position sizing calculator and trade journal. Built by EXEC8.">
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=JetBrains+Mono:wght@400;500&family=Inter+Tight:wght@300;400;500&display=swap" rel="stylesheet" />
@@ -39,14 +39,13 @@
     -webkit-font-smoothing: antialiased;
     font-weight: 400;
   }
-  .container { max-width: 820px; margin: 0 auto; }
+  .container { max-width: 1240px; margin: 0 auto; }
 
-  /* nav back to home */
   .topnav {
     display: flex; justify-content: space-between; align-items: center;
-    padding: 0 0 32px;
+    padding: 0 0 28px;
     border-bottom: 1px solid var(--rule);
-    margin-bottom: 48px;
+    margin-bottom: 40px;
   }
   .topnav .brand {
     font-family: var(--mono); font-size: 13px; font-weight: 500;
@@ -61,262 +60,102 @@
   .topnav .back:hover { color: var(--acc); }
 
   header {
-    padding: 12px 0 36px;
-    margin-bottom: 36px;
+    padding: 12px 0 32px;
     border-bottom: 1px solid var(--rule);
+    margin-bottom: 32px;
   }
   .eyebrow {
     font-family: var(--mono); font-size: 11px; color: var(--ink-3);
-    letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 20px;
+    letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 18px;
   }
   h1 {
-    font-family: var(--serif); font-size: clamp(36px, 5vw, 52px);
+    font-family: var(--serif); font-size: clamp(34px, 5vw, 48px);
     font-weight: 300; line-height: 1.05; letter-spacing: -0.025em;
-    color: var(--ink); margin-bottom: 18px;
+    color: var(--ink); margin-bottom: 14px;
   }
   h1 em { font-style: italic; color: var(--acc); font-weight: 400; }
-  .subtitle {
-    color: var(--ink-2); font-size: 16px; line-height: 1.65;
-    max-width: 640px; font-weight: 400;
+  header p {
+    color: var(--ink-2); font-size: 15px; line-height: 1.6;
+    max-width: 640px;
   }
+
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 18px; }
+  .grid-full { grid-column: 1 / -1; }
+  @media (max-width: 768px) { .grid { grid-template-columns: 1fr; } }
 
   .card {
     background: var(--bg-2);
     border: 1px solid var(--rule);
     border-radius: 2px;
     padding: 28px;
-    margin-bottom: 18px;
   }
   .card h2 {
-    font-family: var(--serif); font-size: 24px; font-weight: 300;
-    color: var(--ink); margin-bottom: 18px; letter-spacing: -0.015em;
+    font-family: var(--serif); font-size: 22px; font-weight: 300;
+    color: var(--ink); margin-bottom: 20px;
+    letter-spacing: -0.015em; line-height: 1.2;
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
   }
   .card h2 em { font-style: italic; color: var(--acc); font-weight: 400; }
-
-  .intro-card {
-    background: var(--bg-2);
-    border-left: 1px solid var(--acc);
-  }
-  .intro-card p {
-    color: var(--ink-2); font-size: 14px;
-    margin-bottom: 12px; line-height: 1.7;
-  }
-  .intro-card p:last-child { margin-bottom: 0; }
-  .intro-card strong { color: var(--acc); font-weight: 500; }
-
-  .sample-size-info {
-    background: var(--bg-2);
-    border: 1px solid var(--rule);
-    border-left: 1px solid var(--warn);
-    border-radius: 2px;
-    padding: 22px;
-    margin-top: 18px;
-  }
-  .sample-size-info h4 {
-    color: var(--warn); font-size: 11px; font-weight: 500;
-    margin-bottom: 12px; letter-spacing: 0.14em;
-    text-transform: uppercase; font-family: var(--mono);
-  }
-  .sample-size-info p {
-    color: var(--ink-2); font-size: 13px;
-    margin-bottom: 10px; line-height: 1.65;
-  }
-  .sample-size-info p:last-child { margin-bottom: 0; }
-  .sample-size-info ul {
-    list-style: none; padding: 0; margin: 12px 0;
-  }
-  .sample-size-info ul li {
-    padding: 6px 0; padding-left: 20px;
-    position: relative; color: var(--ink-2);
-    font-size: 13px; font-family: var(--mono);
-    letter-spacing: 0.01em;
-  }
-  .sample-size-info ul li:before {
-    content: ""; position: absolute; left: 0; top: 14px;
-    width: 6px; height: 1px; background: var(--warn);
-  }
-
-  .input-mode-tabs {
-    display: flex; gap: 0; margin-bottom: 22px;
-    background: var(--bg-3);
-    border: 1px solid var(--rule);
-    border-radius: 2px;
-    padding: 4px;
-  }
-  .input-mode-tab {
-    flex: 1; padding: 11px;
-    background: transparent; border: none; border-radius: 1px;
-    color: var(--ink-3); cursor: pointer;
-    font-size: 11px; font-weight: 500;
+  .card h2 .badge {
+    background: transparent; color: var(--ink-3);
+    border: 1px solid var(--rule-2);
+    padding: 4px 10px; border-radius: 1px;
+    font-size: 10px; font-weight: 500;
     font-family: var(--mono); letter-spacing: 0.1em;
     text-transform: uppercase;
-    transition: all 0.2s;
   }
-  .input-mode-tab:hover { color: var(--ink); }
-  .input-mode-tab.active {
-    background: var(--acc); color: var(--bg); font-weight: 500;
-  }
-
-  .input-mode-content { display: none; }
-  .input-mode-content.active { display: block; }
-
-  .csv-upload-area {
-    border: 1px dashed var(--rule-2);
-    border-radius: 2px;
-    padding: 40px 24px;
-    text-align: center;
-    transition: all 0.25s;
-    cursor: pointer;
-    background: var(--bg-3);
-  }
-  .csv-upload-area:hover {
-    border-color: var(--acc);
-    background: rgba(201, 169, 97, 0.04);
-  }
-  .csv-upload-area.dragover {
-    border-color: var(--acc-2);
-    background: rgba(226, 199, 134, 0.06);
-  }
-  .csv-upload-area .upload-icon {
-    font-size: 32px; margin-bottom: 14px; color: var(--ink-3);
-    font-family: var(--mono); font-weight: 300;
-  }
-  .csv-upload-area .upload-text {
-    color: var(--ink); font-size: 15px; margin-bottom: 6px;
-    font-family: var(--serif); font-style: italic; font-weight: 400;
-  }
-  .csv-upload-area .upload-subtext {
-    color: var(--ink-3); font-size: 11px;
-    font-family: var(--mono); letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
-  .csv-upload-area input[type="file"] { display: none; }
-
-  .csv-template-info {
-    background: var(--bg-3);
-    border: 1px solid var(--rule);
-    border-radius: 2px;
-    padding: 20px;
-    margin-top: 18px;
-  }
-  .csv-template-info h4 {
-    color: var(--acc); font-size: 11px; margin-bottom: 12px;
+  .card h2 .live-badge {
+    background: var(--bg-3); color: var(--acc);
+    border: 1px solid var(--acc);
+    padding: 3px 10px; border-radius: 1px;
+    font-size: 9px; font-weight: 500;
     font-family: var(--mono); letter-spacing: 0.14em;
-    text-transform: uppercase; font-weight: 500;
-  }
-  .csv-template-info p {
-    color: var(--ink-2); font-size: 13px;
-    margin-bottom: 10px; line-height: 1.65;
-  }
-  .csv-template-info code {
-    background: var(--bg);
-    padding: 2px 7px; border-radius: 1px;
-    font-family: var(--mono); font-size: 12px;
-    color: var(--acc); border: 1px solid var(--rule);
-  }
-  .csv-template-info .example-table {
-    background: var(--bg);
-    border: 1px solid var(--rule);
-    border-radius: 2px; padding: 14px;
-    margin: 12px 0; font-family: var(--mono);
-    font-size: 12px; overflow-x: auto;
-    color: var(--ink-2); line-height: 1.7;
-  }
-
-  .csv-status {
-    display: none;
-    background: var(--bg-3);
-    border: 1px solid var(--pos);
-    border-radius: 2px; padding: 14px;
-    margin-top: 14px; color: var(--pos);
-    font-size: 13px; font-family: var(--mono);
-  }
-  .csv-status.error {
-    border-color: var(--neg); color: var(--neg);
-  }
-  .csv-status.warning {
-    border-color: var(--warn); color: var(--warn);
-  }
-  .csv-status.active { display: block; }
-
-  .trade-row {
-    display: grid;
-    grid-template-columns: 50px 1fr 1fr 50px;
-    gap: 10px; padding: 10px 12px;
-    background: var(--bg-3);
-    border: 1px solid var(--rule);
-    border-radius: 2px;
-    margin-bottom: 8px;
-    align-items: center;
-  }
-  .trade-row .trade-num {
-    font-size: 12px; color: var(--ink-3); text-align: center;
-    font-family: var(--mono);
-  }
-  .trade-row select, .trade-row input {
-    width: 100%; padding: 9px 11px;
-    background: var(--bg);
-    border: 1px solid var(--rule);
-    border-radius: 1px;
-    color: var(--ink);
-    font-size: 13px;
-    font-family: var(--mono);
-    transition: border-color 0.2s;
-  }
-  .trade-row select:focus, .trade-row input:focus {
-    outline: none; border-color: var(--acc);
-  }
-  .trade-row .delete-row {
-    background: transparent; color: var(--ink-3);
-    border: none; cursor: pointer;
-    font-size: 18px; padding: 4px;
-    transition: color 0.2s;
-  }
-  .trade-row .delete-row:hover { color: var(--neg); }
-
-  .progress-counter {
-    background: var(--bg-3);
-    border: 1px solid var(--rule);
-    border-radius: 2px; padding: 16px 18px;
-    margin: 16px 0;
-    display: flex; align-items: center;
-    justify-content: space-between;
-  }
-  .progress-counter .count-info {
-    color: var(--ink-2); font-size: 13px;
-    font-family: var(--mono); letter-spacing: 0.04em;
-  }
-  .progress-counter .count-info .num {
-    color: var(--acc); font-weight: 500;
-    font-size: 16px; padding: 0 4px;
-  }
-  .progress-counter .count-info .num.insufficient { color: var(--neg); }
-  .progress-counter .count-info .num.minimum { color: var(--warn); }
-  .progress-counter .count-info .num.good { color: var(--pos); }
-  .progress-counter .threshold-bar {
-    flex: 0 0 auto; margin-left: 16px;
-    font-size: 11px; color: var(--ink-3);
-    font-family: var(--mono); letter-spacing: 0.08em;
     text-transform: uppercase;
+    animation: pulse 2.4s ease-in-out infinite;
+  }
+  .card h2 .open-badge {
+    background: var(--bg-3); color: var(--warn);
+    border: 1px solid var(--warn);
+    padding: 3px 10px; border-radius: 1px;
+    font-size: 9px; font-weight: 500;
+    font-family: var(--mono); letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+  .form-group { margin-bottom: 16px; }
+  label {
+    display: block; font-size: 10px; color: var(--ink-3);
+    margin-bottom: 8px; text-transform: uppercase;
+    letter-spacing: 0.14em; font-family: var(--mono);
+    font-weight: 500;
+  }
+  input, select, textarea {
+    width: 100%; padding: 11px 13px;
+    background: var(--bg-3);
+    border: 1px solid var(--rule);
+    border-radius: 1px; color: var(--ink);
+    font-size: 14px; font-family: var(--mono);
+    transition: border-color 0.2s;
+    font-variant-numeric: tabular-nums;
+  }
+  input:focus, select:focus, textarea:focus {
+    outline: none; border-color: var(--acc);
   }
 
   button {
     background: transparent; color: var(--ink);
     border: 1px solid var(--rule-2);
-    padding: 12px 20px; border-radius: 1px; cursor: pointer;
-    font-size: 11px; font-weight: 500;
-    font-family: var(--mono); letter-spacing: 0.1em;
-    text-transform: uppercase;
+    padding: 11px 18px; border-radius: 1px;
+    cursor: pointer; font-size: 11px;
+    font-weight: 500; font-family: var(--mono);
+    letter-spacing: 0.1em; text-transform: uppercase;
     transition: all 0.25s;
   }
   button:hover {
     border-color: var(--ink-2); background: var(--bg-3);
   }
-  button:disabled {
-    border-color: var(--rule); color: var(--ink-4);
-    cursor: not-allowed; background: transparent;
-  }
-  button:disabled:hover { background: transparent; }
+  button.secondary { color: var(--ink-2); }
   button.success {
     background: var(--acc); color: var(--bg);
     border-color: var(--acc); font-weight: 500;
@@ -324,231 +163,394 @@
   button.success:hover {
     background: var(--acc-2); border-color: var(--acc-2);
   }
-  button.success:disabled {
-    background: transparent; color: var(--ink-4);
-    border-color: var(--rule);
+  button.danger {
+    color: var(--neg); border-color: var(--neg);
   }
-  button.secondary { color: var(--ink-2); }
-
-  .button-row { display: flex; gap: 12px; margin-top: 18px; flex-wrap: wrap; }
-
-  .results-card {
-    background: var(--bg-2);
-    border: 1px solid var(--rule);
-    border-left: 1px solid var(--acc);
-    display: none;
+  button.danger:hover {
+    background: var(--neg); color: var(--bg);
   }
-  .results-card.active { display: block; }
-  .results-card h2 { color: var(--ink); }
-  .results-card h2 em { color: var(--acc); }
+  button.warning {
+    color: var(--warn); border-color: var(--warn);
+  }
+  button.warning:hover {
+    background: var(--warn); color: var(--bg);
+  }
 
-  .reliability-banner {
-    border-radius: 2px; padding: 16px 18px;
-    margin-bottom: 20px; font-size: 13px;
-    line-height: 1.6;
+  .kelly-selector {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-top: 12px;
+    margin-bottom: 12px;
+  }
+  .kelly-option {
     background: var(--bg-3);
     border: 1px solid var(--rule);
+    border-radius: 1px;
+    padding: 14px 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
   }
-  .reliability-banner.warning {
-    border-left: 1px solid var(--warn); color: var(--ink-2);
+  .kelly-option:hover { border-color: var(--rule-2); }
+  .kelly-option.selected {
+    border-color: var(--acc);
+    background: rgba(201, 169, 97, 0.06);
   }
-  .reliability-banner.warning strong { color: var(--warn); }
-  .reliability-banner.moderate {
-    border-left: 1px solid var(--acc); color: var(--ink-2);
+  .kelly-option.aggressive { border-color: var(--rule-2); }
+  .kelly-option.aggressive:hover {
+    border-color: var(--warn);
+    background: rgba(212, 149, 106, 0.05);
   }
-  .reliability-banner.moderate strong { color: var(--acc); }
-  .reliability-banner.high {
-    border-left: 1px solid var(--pos); color: var(--ink-2);
+  .kelly-option.aggressive.selected {
+    border-color: var(--warn);
+    background: rgba(212, 149, 106, 0.08);
   }
-  .reliability-banner.high strong { color: var(--pos); }
-  .reliability-banner strong {
-    display: block; margin-bottom: 6px;
-    font-size: 11px; text-transform: uppercase;
+  .kelly-option .label {
+    font-size: 10px; color: var(--ink-3);
+    text-transform: uppercase; margin-bottom: 6px;
+    letter-spacing: 0.12em; font-family: var(--mono);
+    font-weight: 500;
+  }
+  .kelly-option.selected .label { color: var(--acc); }
+  .kelly-option.aggressive .label { color: var(--warn); }
+  .kelly-option .pct {
+    font-size: 18px; font-weight: 500;
+    color: var(--ink); font-family: var(--mono);
+    letter-spacing: -0.01em;
+    font-variant-numeric: tabular-nums;
+  }
+  .kelly-option.selected .pct { color: var(--acc); }
+  .kelly-option.aggressive .pct { color: var(--warn); }
+  .kelly-option .desc {
+    font-size: 11px; color: var(--ink-3);
+    margin-top: 6px; line-height: 1.4;
+  }
+  .kelly-option .drawdown {
+    font-size: 10px; color: var(--ink-4);
+    margin-top: 4px; font-family: var(--mono);
+    letter-spacing: 0.04em;
+  }
+  .kelly-option.aggressive .drawdown { color: var(--warn); }
+
+  .drawdown-explainer {
+    background: var(--bg-3);
+    border: 1px solid var(--rule);
+    border-left: 1px solid var(--acc);
+    border-radius: 2px;
+    padding: 14px 16px;
+    margin: 8px 0 14px 0;
+    font-size: 12px;
+    color: var(--ink-2);
+    line-height: 1.65;
+  }
+  .drawdown-explainer strong {
+    color: var(--acc);
+    display: block;
+    margin-bottom: 6px;
+    font-size: 10px;
+    font-family: var(--mono);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  .full-kelly-warning {
+    background: var(--bg-3);
+    border: 1px solid var(--rule);
+    border-left: 1px solid var(--neg);
+    border-radius: 2px;
+    padding: 14px 16px;
+    margin-top: 8px;
+    margin-bottom: 14px;
+    font-size: 12px;
+    color: var(--ink-2);
+    line-height: 1.65;
+  }
+  .full-kelly-warning strong {
+    color: var(--neg);
+    display: block;
+    margin-bottom: 6px;
+    font-size: 10px;
+    font-family: var(--mono);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  .stat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--rule); border: 1px solid var(--rule); border-radius: 2px; }
+  .stat {
+    background: var(--bg-2);
+    padding: 18px 16px;
+  }
+  .stat-label {
+    font-size: 10px; color: var(--ink-3);
+    text-transform: uppercase; margin-bottom: 8px;
     letter-spacing: 0.14em; font-family: var(--mono);
     font-weight: 500;
   }
-
-  .stats-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1px;
-    background: var(--rule);
-    border: 1px solid var(--rule);
-    border-radius: 2px;
-    margin: 18px 0;
-  }
-  @media (max-width: 600px) { .stats-grid { grid-template-columns: 1fr; } }
-  .stat-box {
-    background: var(--bg-2);
-    padding: 22px 20px;
-  }
-  .stat-box .label {
-    font-size: 10px; color: var(--ink-3);
-    text-transform: uppercase; letter-spacing: 0.14em;
-    margin-bottom: 10px; font-family: var(--mono);
-    font-weight: 500;
-  }
-  .stat-box .value {
-    font-size: 28px; font-weight: 400;
+  .stat-value {
+    font-size: 22px; font-weight: 400;
     color: var(--ink); font-family: var(--mono);
     letter-spacing: -0.02em;
     font-variant-numeric: tabular-nums;
   }
-  .stat-box .value.green { color: var(--pos); }
-  .stat-box .value.red { color: var(--neg); }
-  .stat-box .value.amber { color: var(--warn); }
-  .stat-box .value.accent { color: var(--acc); }
+  .stat-value.green { color: var(--pos); }
+  .stat-value.red { color: var(--neg); }
+  .stat-value.accent { color: var(--acc); }
+  .stat-value.amber { color: var(--warn); }
 
-  .verdict {
+  .kelly-output {
     background: var(--bg-3);
     border: 1px solid var(--rule);
-    border-radius: 2px; padding: 22px;
-    margin-top: 18px;
+    border-radius: 2px;
+    padding: 16px;
+    margin-top: 14px;
   }
-  .verdict h3 {
-    font-family: var(--serif); font-style: italic;
-    font-weight: 400; color: var(--ink);
-    font-size: 22px; margin-bottom: 16px;
-    letter-spacing: -0.01em;
+  .kelly-row {
+    display: flex; justify-content: space-between;
+    padding: 9px 0; border-bottom: 1px solid var(--rule);
   }
-  .verdict p {
-    color: var(--ink-2); font-size: 14px;
-    margin-bottom: 12px; line-height: 1.7;
+  .kelly-row:last-child { border-bottom: none; }
+  .kelly-row .label {
+    color: var(--ink-3); font-size: 12px;
+    font-family: var(--mono); letter-spacing: 0.04em;
   }
-  .verdict p:last-child { margin-bottom: 0; }
-  .verdict strong.positive { color: var(--pos); font-weight: 500; }
-  .verdict strong.negative { color: var(--neg); font-weight: 500; }
-  .verdict strong.neutral { color: var(--warn); font-weight: 500; }
-  .verdict strong { color: var(--ink); font-weight: 500; }
+  .kelly-row .value {
+    color: var(--ink); font-weight: 500;
+    font-size: 13px; font-family: var(--mono);
+    font-variant-numeric: tabular-nums;
+  }
+  .kelly-row.active {
+    background: rgba(201, 169, 97, 0.06);
+    border-radius: 1px;
+    padding: 9px 12px;
+    border-bottom: none;
+  }
+  .kelly-row.active .label { color: var(--acc); font-weight: 500; }
+  .kelly-row.active .value { color: var(--acc); }
 
-  .kelly-recommendation {
+  .position-output {
     background: var(--bg-3);
     border: 1px solid var(--rule);
     border-left: 1px solid var(--acc);
-    border-radius: 2px; padding: 24px;
-    margin-top: 20px;
+    border-radius: 2px;
+    padding: 18px;
+    margin-top: 14px;
   }
-  .kelly-recommendation.locked {
-    border-left-color: var(--warn);
+  .position-output.warning-bg {
+    border-left-color: var(--neg);
   }
-  .kelly-recommendation h3 {
-    font-family: var(--serif); font-style: italic;
-    font-weight: 400; color: var(--acc);
-    font-size: 22px; margin-bottom: 14px;
-    letter-spacing: -0.01em;
+  .position-row {
+    display: flex; justify-content: space-between;
+    margin-bottom: 10px;
   }
-  .kelly-recommendation.locked h3 { color: var(--warn); }
-  .kelly-recommendation p {
-    color: var(--ink-2); font-size: 14px;
-    margin-bottom: 12px; line-height: 1.7;
+  .position-row:last-child { margin-bottom: 0; }
+  .position-row .label {
+    color: var(--ink-3); font-size: 12px;
+    font-family: var(--mono); letter-spacing: 0.04em;
   }
-  .kelly-recommendation .kelly-value {
-    background: var(--bg);
-    border: 1px solid var(--rule);
-    border-radius: 2px; padding: 22px;
-    margin-top: 16px; text-align: center;
-  }
-  .kelly-recommendation .kelly-value .number {
-    font-size: 40px; font-weight: 400;
-    color: var(--acc); font-family: var(--mono);
-    letter-spacing: -0.025em;
+  .position-row .value {
+    color: var(--pos); font-weight: 500;
+    font-size: 14px; font-family: var(--mono);
     font-variant-numeric: tabular-nums;
   }
-  .kelly-recommendation.locked .kelly-value .number { color: var(--warn); }
-  .kelly-recommendation .kelly-value .label {
-    font-size: 11px; color: var(--ink-3);
-    margin-top: 8px; font-family: var(--mono);
-    letter-spacing: 0.12em; text-transform: uppercase;
+
+  .trade-warning {
+    background: var(--bg-3);
+    border: 1px solid var(--neg);
+    color: var(--neg);
+    padding: 12px 14px;
+    border-radius: 2px;
+    font-size: 12px;
+    margin-top: 12px;
+    font-family: var(--mono);
+    line-height: 1.6;
+    letter-spacing: 0.02em;
   }
 
-  .cta-section {
-    text-align: center; padding: 40px 24px;
+  table {
+    width: 100%; border-collapse: collapse;
+    font-size: 12px; font-family: var(--mono);
+  }
+  thead { background: var(--bg-3); }
+  th {
+    text-align: left; padding: 12px 14px;
+    color: var(--ink-3); font-weight: 500;
+    text-transform: uppercase; font-size: 10px;
+    letter-spacing: 0.14em;
+    border-bottom: 1px solid var(--rule);
+  }
+  td {
+    padding: 12px 14px; border-bottom: 1px solid var(--rule);
+    color: var(--ink-2); font-variant-numeric: tabular-nums;
+  }
+  tr:hover { background: var(--bg-3); }
+  tr.open-trade {
+    background: rgba(212, 149, 106, 0.04);
+  }
+  tr.open-trade:hover {
+    background: rgba(212, 149, 106, 0.08);
+  }
+  .win { color: var(--pos); font-weight: 500; }
+  .loss { color: var(--neg); font-weight: 500; }
+  .be { color: var(--ink-3); font-weight: 500; }
+  .open { color: var(--warn); font-weight: 500; }
+
+  .action-row {
+    display: flex; gap: 12px; flex-wrap: wrap;
+    margin-top: 18px;
+  }
+
+  .rules-card {
+    background: var(--bg-2);
+    border: 1px solid var(--rule);
+    border-left: 1px solid var(--acc);
+  }
+  .rules-list { list-style: none; padding: 0; }
+  .rules-list li {
+    padding: 9px 0; padding-left: 28px;
+    color: var(--ink-2); font-size: 14px;
+    position: relative; line-height: 1.5;
+  }
+  .rules-list li:before {
+    content: counter(rule-counter, decimal-leading-zero);
+    counter-increment: rule-counter;
+    position: absolute; left: 0; top: 9px;
+    color: var(--acc); font-family: var(--mono);
+    font-size: 11px; font-weight: 500;
+    letter-spacing: 0.04em;
+  }
+  .rules-list { counter-reset: rule-counter; }
+
+  .progress-bar {
+    background: var(--bg-3);
+    border: 1px solid var(--rule);
+    border-radius: 1px;
+    height: 28px;
+    overflow: hidden;
+    position: relative;
+    margin-top: 10px;
+  }
+  .progress-fill {
+    background: var(--acc);
+    height: 100%;
+    transition: width 0.4s ease;
+  }
+  .progress-text {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 11px; color: var(--ink);
+    font-weight: 500; font-family: var(--mono);
+    letter-spacing: 0.1em; text-transform: uppercase;
+    mix-blend-mode: difference;
+  }
+
+  .empty-state {
+    text-align: center; padding: 48px 20px;
+    color: var(--ink-3); font-size: 14px;
+    font-family: var(--serif); font-style: italic;
+    font-weight: 300;
+  }
+
+  .delete-btn {
+    background: transparent; color: var(--ink-3);
+    border: none; cursor: pointer;
+    padding: 4px 10px; font-size: 16px;
+    transition: color 0.2s;
+    text-transform: none; letter-spacing: 0;
+  }
+  .delete-btn:hover { color: var(--neg); }
+
+  .close-btn {
+    background: transparent; color: var(--warn);
+    border: 1px solid var(--warn);
+    cursor: pointer; padding: 5px 12px;
+    font-size: 10px; border-radius: 1px;
+    margin-right: 6px; font-family: var(--mono);
+    letter-spacing: 0.1em; text-transform: uppercase;
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+  .close-btn:hover {
+    background: var(--warn); color: var(--bg);
+  }
+
+  .note {
+    font-size: 12px; color: var(--ink-3);
+    margin-top: 10px; line-height: 1.6;
+    font-family: var(--serif); font-style: italic;
+    font-weight: 300;
+  }
+
+  .modal-overlay {
+    display: none; position: fixed; top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(11, 14, 26, 0.85);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 100;
+    justify-content: center; align-items: center;
+    padding: 20px;
+  }
+  .modal-overlay.active { display: flex; }
+  .modal {
     background: var(--bg-2);
     border: 1px solid var(--rule-2);
     border-radius: 2px;
-    margin-top: 28px; position: relative;
+    padding: 32px;
+    max-width: 560px; width: 100%;
+    max-height: 90vh; overflow-y: auto;
   }
-  .cta-section::before {
-    content: ""; position: absolute; top: 0; left: 50%;
-    transform: translateX(-50%); width: 60px; height: 1px;
-    background: var(--acc);
+  .modal h3 {
+    font-family: var(--serif); font-size: 24px;
+    font-weight: 300; color: var(--ink);
+    margin-bottom: 18px; letter-spacing: -0.015em;
   }
-  .cta-section h3 {
-    font-family: var(--serif); font-weight: 300;
-    color: var(--ink); font-size: 26px;
-    margin-bottom: 14px; letter-spacing: -0.02em;
-    line-height: 1.2;
-  }
-  .cta-section h3 em { color: var(--acc); font-style: italic; font-weight: 400; }
-  .cta-section p {
-    color: var(--ink-2); font-size: 14px;
-    margin-bottom: 24px; line-height: 1.7;
-    max-width: 480px; margin-left: auto; margin-right: auto;
-  }
-  .cta-section .cta-button {
-    display: inline-block;
-    background: var(--acc); color: var(--bg);
-    padding: 14px 28px; border-radius: 1px;
-    text-decoration: none; font-weight: 500;
-    font-size: 11px; font-family: var(--mono);
-    letter-spacing: 0.12em; text-transform: uppercase;
-    transition: background 0.2s;
-  }
-  .cta-section .cta-button:hover { background: var(--acc-2); }
-
-  .empty-warning {
-    background: var(--bg-3);
-    border: 1px solid var(--rule);
-    border-left: 1px solid var(--neg);
-    border-radius: 2px; padding: 14px;
-    margin: 14px 0; color: var(--neg);
-    font-size: 13px; font-family: var(--mono);
+  .modal-actions {
+    display: flex; gap: 12px;
+    margin-top: 20px;
+    justify-content: flex-end;
+    flex-wrap: wrap;
   }
 
-  .header-grid {
-    display: grid;
-    grid-template-columns: 50px 1fr 1fr 50px;
-    gap: 10px; padding: 0 12px;
-    margin-bottom: 10px;
-  }
-  .header-grid div {
-    font-size: 10px; color: var(--ink-3);
-    text-transform: uppercase; letter-spacing: 0.14em;
-    text-align: center; font-family: var(--mono);
-    font-weight: 500;
-  }
-  .header-grid div:nth-child(2),
-  .header-grid div:nth-child(3) { text-align: left; }
-
-  .download-template {
-    display: inline-block;
-    background: transparent;
-    color: var(--ink-2);
-    padding: 9px 16px; border-radius: 1px;
-    text-decoration: none; font-size: 11px;
-    cursor: pointer; border: 1px solid var(--rule-2);
-    font-family: var(--mono); letter-spacing: 0.1em;
-    text-transform: uppercase; margin-top: 12px;
-    transition: all 0.2s;
-  }
-  .download-template:hover {
-    border-color: var(--acc); color: var(--acc);
-  }
-
-  .honesty-card {
+  .open-trades-card {
     background: var(--bg-2);
     border: 1px solid var(--rule);
     border-left: 1px solid var(--warn);
   }
-  .honesty-card h2 {
-    color: var(--ink);
+
+  .warning-modal {
+    border-left: 1px solid var(--warn);
+    border-color: var(--warn);
   }
-  .honesty-card h2 em { color: var(--warn); }
-  .honesty-card p {
-    font-size: 14px; color: var(--ink-2);
-    margin-bottom: 12px; line-height: 1.75;
+  .warning-modal h3 {
+    color: var(--warn);
+    display: flex; align-items: center; gap: 10px;
   }
-  .honesty-card p:last-child { margin-bottom: 0; }
+  .warning-modal .warning-content {
+    background: var(--bg-3);
+    border: 1px solid var(--rule);
+    border-radius: 2px; padding: 18px;
+    margin-bottom: 18px;
+  }
+  .warning-modal .warning-content p {
+    color: var(--ink-2); font-size: 13px;
+    margin-bottom: 12px; line-height: 1.65;
+  }
+  .warning-modal .warning-content p:last-child { margin-bottom: 0; }
+  .warning-modal .warning-content strong { color: var(--warn); }
+  .warning-modal ul { list-style: none; padding: 0; margin: 12px 0; }
+  .warning-modal ul li {
+    padding: 6px 0; padding-left: 20px;
+    position: relative;
+    color: var(--ink-2); font-size: 13px;
+    line-height: 1.5;
+  }
+  .warning-modal ul li:before {
+    content: ""; position: absolute; left: 0; top: 14px;
+    width: 6px; height: 1px; background: var(--warn);
+  }
 </style>
 </head>
 <body>
@@ -560,487 +562,711 @@
   </nav>
 
   <header>
-    <div class="eyebrow">Tool 01 / Calculator</div>
-    <h1>Discover your <em>real</em> win rate.</h1>
-    <p class="subtitle">Most traders never measure what they're actually doing. Enter your last 30+ trades manually or upload a CSV. See your real win rate, real reward-to-risk, and what Kelly fraction you should be using. Free, no signup.</p>
+    <div class="eyebrow">Tool 02 / Tracker</div>
+    <h1>Kelly <em>tracker.</em></h1>
+    <p>Position sizing calculator and trade journal. Half-Kelly requires confirmation. Full Kelly is disabled — the math doesn't support it for any retail trader. Your data is saved locally in your browser.</p>
   </header>
 
-  <div class="card intro-card">
-    <p><strong>How this works.</strong></p>
-    <p>For each of your trades, enter whether it was a win or loss, and how big the win/loss was relative to what you risked (the R multiple).</p>
-    <p>Example: If you risked $100 to make $200 and the trade hit your target, that's a Win at +2R. If you got stopped out for a $100 loss, that's a Loss at -1R. If the trade went halfway then stopped you out at breakeven, that's 0R.</p>
-    <p><strong>You don't need exact dollar amounts.</strong> Just the outcome and how big it was relative to what you risked. Estimate if you have to.</p>
-  </div>
-
-  <div class="sample-size-info">
-    <h4>Why we need 30+ trades minimum</h4>
-    <p>Win rate calculated from too few trades is mostly random noise. Statistics needs sample size to be meaningful.</p>
-    <ul>
-      <li>10 trades: 95% confidence interval is ±31% (basically meaningless)</li>
-      <li>30 trades: 95% confidence interval is ±18% (directional indicator)</li>
-      <li>100 trades: 95% confidence interval is ±10% (reliable)</li>
-      <li>300+ trades: ±6% (statistically robust)</li>
-    </ul>
-    <p>If you have less than 30 trades, this tool won't give you a Kelly recommendation. Trade more, log everything, then come back. Below 30, anything we tell you is just noise dressed up as data.</p>
-  </div>
-
   <div class="card">
-    <h2>Enter your <em>trades</em></h2>
-
-    <div class="input-mode-tabs">
-      <button class="input-mode-tab active" onclick="switchMode('manual')">Manual entry</button>
-      <button class="input-mode-tab" onclick="switchMode('csv')">Upload CSV</button>
-    </div>
-
-    <div class="input-mode-content active" id="manualMode">
-      <div class="header-grid">
-        <div>#</div>
-        <div>Outcome</div>
-        <div>R Multiple</div>
-        <div></div>
+    <h2>Account overview <span class="badge" id="progressBadge">0 / 20 trades</span></h2>
+    <div class="stat-grid">
+      <div class="stat">
+        <div class="stat-label">Starting Balance</div>
+        <div class="stat-value" id="startBalance">$900.00</div>
       </div>
-
-      <div id="tradesContainer"></div>
-
-      <div class="progress-counter">
-        <div class="count-info">
-          Trades: <span class="num" id="tradeCounter">0</span>
-          <span style="color: var(--ink-3); font-size: 12px;">/ 30 minimum</span>
-        </div>
-        <div class="threshold-bar" id="thresholdMessage">Need 30 to calculate</div>
+      <div class="stat">
+        <div class="stat-label">Current Balance</div>
+        <div class="stat-value accent" id="currentBalance">$900.00</div>
       </div>
-
-      <div class="button-row">
-        <button class="secondary" onclick="addTradeRow()">+ Add trade</button>
-        <button class="success" onclick="calculateResults()" id="calculateBtn" disabled>Calculate my stats →</button>
+      <div class="stat">
+        <div class="stat-label">Total P/L (closed)</div>
+        <div class="stat-value" id="totalPL">$0.00</div>
       </div>
-
-      <div class="empty-warning" id="emptyWarning" style="display: none;">
-        Enter at least 30 valid trades to get meaningful results.
+      <div class="stat">
+        <div class="stat-label">Return %</div>
+        <div class="stat-value" id="returnPct">0.00%</div>
       </div>
     </div>
-
-    <div class="input-mode-content" id="csvMode">
-      <div class="csv-upload-area" id="csvUploadArea" onclick="document.getElementById('csvFileInput').click()">
-        <div class="upload-icon">↑</div>
-        <div class="upload-text">Click to upload or drag and drop</div>
-        <div class="upload-subtext">.csv format · template below</div>
-        <input type="file" id="csvFileInput" accept=".csv" onchange="handleCSVUpload(event)">
-      </div>
-
-      <div class="csv-status" id="csvStatus"></div>
-
-      <div class="csv-template-info">
-        <h4>CSV format required</h4>
-        <p>Your CSV must have these three columns: <code>Trade</code>, <code>Outcome</code>, <code>R</code></p>
-        <p><strong style="color:var(--ink);">Outcome</strong> values: <code>win</code>, <code>loss</code>, or <code>breakeven</code></p>
-        <p><strong style="color:var(--ink);">R</strong> values: positive numbers for wins (like <code>2</code> for 2R win), negative for losses (like <code>-1</code> for 1R loss), <code>0</code> for breakeven</p>
-        <div class="example-table">
-Trade,Outcome,R
-1,win,2.5
-2,loss,-1
-3,win,1.8
-4,breakeven,0
-...30+ rows
-        </div>
-        <p>Don't have a CSV? Download a template to fill in:</p>
-        <button class="download-template" onclick="downloadTemplate()">↓ Download template</button>
-      </div>
-
-      <div class="button-row">
-        <button class="success" onclick="calculateResults()" id="csvCalculateBtn" style="display: none;" disabled>Calculate my stats from CSV →</button>
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+      <div class="progress-text" id="progressText">0 / 20 trades</div>
+    </div>
+    <div class="form-group" style="margin-top: 18px;">
+      <label>Update starting balance (only if not started)</label>
+      <div style="display: flex; gap: 10px;">
+        <input type="number" id="editStart" step="0.01" placeholder="900.00">
+        <button class="secondary" onclick="updateStartBalance()">Update</button>
       </div>
     </div>
   </div>
 
-  <div class="card results-card" id="resultsCard">
-    <h2>Your trading <em>stats</em></h2>
+  <div class="grid" style="margin-top: 20px;">
+    <div class="card">
+      <h2>Kelly <em>calculator</em> <span class="live-badge">Live</span></h2>
+      <div class="form-group">
+        <label>Win Rate (%)</label>
+        <input type="number" id="winRate" step="0.1" min="0" max="100" value="55">
+        <div class="note">Assumed 55% until you have 20+ trades of data</div>
+      </div>
+      <div class="form-group">
+        <label>Average Reward-to-Risk Ratio</label>
+        <input type="number" id="rrRatio" step="0.1" min="0" value="2">
+        <div class="note">Your target R:R on average trade</div>
+      </div>
 
-    <div id="reliabilityBanner"></div>
+      <label style="margin-top: 12px;">Choose Your Kelly Fraction</label>
+      <div class="kelly-selector" id="kellySelector">
+        <div class="kelly-option" data-fraction="0.0625" onclick="selectKelly(0.0625)">
+          <div class="label">1/16 Kelly</div>
+          <div class="pct" id="opt-1-16">2.03%</div>
+          <div class="desc">Capital preservation</div>
+          <div class="drawdown">~3% max DD</div>
+        </div>
+        <div class="kelly-option" data-fraction="0.125" onclick="selectKelly(0.125)">
+          <div class="label">1/8 Kelly</div>
+          <div class="pct" id="opt-1-8">4.06%</div>
+          <div class="desc">Compound growth</div>
+          <div class="drawdown">~8% max DD</div>
+        </div>
+        <div class="kelly-option selected" data-fraction="0.25" onclick="selectKelly(0.25)">
+          <div class="label">1/4 Kelly</div>
+          <div class="pct" id="opt-1-4">8.13%</div>
+          <div class="desc">Standard discipline</div>
+          <div class="drawdown">~18% max DD</div>
+        </div>
+      </div>
 
-    <div class="stats-grid">
-      <div class="stat-box">
-        <div class="label">Total Trades</div>
-        <div class="value" id="totalTrades">—</div>
+      <div class="kelly-selector" style="grid-template-columns: 1fr;">
+        <div class="kelly-option aggressive" data-fraction="0.5" onclick="selectKellyHalf()">
+          <div class="label">1/2 Kelly · High Conviction Only</div>
+          <div class="pct" id="opt-1-2">16.25%</div>
+          <div class="desc">Aggressive — for proven traders only</div>
+          <div class="drawdown">~50% max drawdown expected</div>
+        </div>
       </div>
-      <div class="stat-box">
-        <div class="label">Win Rate</div>
-        <div class="value accent" id="winRateValue">—</div>
+
+      <div class="drawdown-explainer">
+        <strong>What "max DD" actually means</strong>
+        Max DD = maximum account decline from peak before recovery, expected over many trades. This is NOT per single trade. Example: at 1/4 Kelly, you risk ~8% per trade, but a string of losses could pull your account ~18% from its peak before it recovers. The drawdown will likely happen at some point if you trade enough. Your job is to hold through it without abandoning the system.
       </div>
-      <div class="stat-box">
-        <div class="label">Average Winner</div>
-        <div class="value green" id="avgWin">—</div>
+
+      <div class="full-kelly-warning">
+        <strong>Full Kelly (32.50%) — Not Available</strong>
+        Full Kelly mathematically guarantees ~80% drawdowns over time. No human trader should run Full Kelly. We don't allow it because the math doesn't support it for any user.
       </div>
-      <div class="stat-box">
-        <div class="label">Average Loser</div>
-        <div class="value red" id="avgLoss">—</div>
+
+      <div class="kelly-output">
+        <div class="kelly-row">
+          <span class="label">Full Kelly (reference only)</span>
+          <span class="value" id="fullKelly">32.50%</span>
+        </div>
+        <div class="kelly-row active" id="activeKellyRow">
+          <span class="label" id="activeKellyLabel">Active: 1/4 Kelly</span>
+          <span class="value" id="activeKellyValue">8.13%</span>
+        </div>
+        <div class="kelly-row">
+          <span class="label">Risk per Trade ($)</span>
+          <span class="value" id="riskPerTrade">$73.13</span>
+        </div>
       </div>
-      <div class="stat-box">
-        <div class="label">Avg Reward-to-Risk</div>
-        <div class="value accent" id="avgRR">—</div>
-      </div>
-      <div class="stat-box">
-        <div class="label">Expected Value / Trade</div>
-        <div class="value" id="expectedValue">—</div>
+      <div class="note" style="margin-top: 14px;">
+        Lower fractions = safer, slower compounding. Higher fractions = bigger drawdowns, faster compounding.
       </div>
     </div>
 
-    <div class="verdict" id="verdictBox">
-      <h3>What this means</h3>
-      <div id="verdictContent"></div>
-    </div>
-
-    <div class="kelly-recommendation" id="kellyRecommendation">
-      <h3 id="kellyHeader">Recommended position sizing</h3>
-      <p id="kellyExplanation"></p>
-      <div class="kelly-value" id="kellyValueBox">
-        <div class="number" id="recommendedKelly">—</div>
-        <div class="label" id="recommendedKellyLabel">Quarter Kelly per trade</div>
+    <div class="card">
+      <h2>Position <em>sizer</em> <span class="live-badge">Live</span></h2>
+      <div class="form-group">
+        <label>Entry Price ($)</label>
+        <input type="number" id="entryPrice" step="0.0001" placeholder="0.2000">
       </div>
-    </div>
-
-    <div class="cta-section">
-      <h3>Want to track this <em>going forward?</em></h3>
-      <p>The data you just discovered is only useful if you keep tracking. Every trade you log going forward sharpens your edge measurement and refines your sizing. The Kelly tracker does this automatically.</p>
-      <a href="/tools/kelly-tracker" class="cta-button" id="trackerLink">Open Kelly tracker →</a>
+      <div class="form-group">
+        <label>Stop Loss Price ($)</label>
+        <input type="number" id="stopPrice" step="0.0001" placeholder="0.1700">
+      </div>
+      <div class="form-group">
+        <label>Target Price ($)</label>
+        <input type="number" id="targetPrice" step="0.0001" placeholder="0.2700">
+      </div>
+      <div class="position-output" id="positionOutput">
+        <div class="position-row">
+          <span class="label">Stop Distance</span>
+          <span class="value" id="stopDistance">—</span>
+        </div>
+        <div class="position-row">
+          <span class="label">Position Size ($)</span>
+          <span class="value" id="positionSize">—</span>
+        </div>
+        <div class="position-row">
+          <span class="label">Tokens</span>
+          <span class="value" id="tokenAmount">—</span>
+        </div>
+        <div class="position-row">
+          <span class="label">Risk ($)</span>
+          <span class="value" id="riskAmount">—</span>
+        </div>
+        <div class="position-row">
+          <span class="label">Reward Target ($)</span>
+          <span class="value" id="rewardAmount">—</span>
+        </div>
+        <div class="position-row">
+          <span class="label">R:R Ratio</span>
+          <span class="value" id="actualRR">—</span>
+        </div>
+      </div>
+      <div class="trade-warning" id="rrWarning" style="display: none;">
+        R:R below 1.5:1 — this trade has poor reward-to-risk math. Consider adjusting target or skipping.
+      </div>
+      <div class="action-row">
+        <button class="success" onclick="fillTradeLogger()">Use these numbers in trade logger ↓</button>
+      </div>
     </div>
   </div>
 
-  <div class="card honesty-card">
-    <h2>A note on <em>honesty</em></h2>
-    <p>The value of this exercise is being honest about your trades. Most traders unconsciously skew their memory: bigger wins, smaller losses, "that wasn't really my system" excuses for losses.</p>
-    <p>If you want this tool to actually help, enter every trade including the ones you'd rather forget. The whole point is to see what you're really doing — not what you wish you were doing.</p>
+  <div class="card rules-card" style="margin-top: 20px;">
+    <h2>The seven non-negotiable <em>rules</em></h2>
+    <ul class="rules-list">
+      <li>Maximum 1 open position at a time</li>
+      <li>Stop loss set as market order BEFORE entry confirmation</li>
+      <li>Three exits only: stop, target, or 72-hour time stop</li>
+      <li>Stops only move to breakeven (after halfway to target) or trail up</li>
+      <li>No position additions, no averaging down, one entry per setup</li>
+      <li>24-hour cooling period after any loss</li>
+      <li>Weekly Sunday review is mandatory (even if zero trades)</li>
+    </ul>
+  </div>
+
+  <div class="card open-trades-card" id="openTradesCard" style="margin-top: 20px; display: none;">
+    <h2>Open trades <span class="open-badge">Active</span></h2>
+    <div style="overflow-x: auto;">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th><th>Date Opened</th><th>Setup</th><th>Dir</th>
+            <th>Entry</th><th>Stop</th><th>Target</th>
+            <th>Position $</th><th>Risk $</th><th>Kelly</th>
+            <th>Notes</th><th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="openTradesBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top: 20px;" id="tradeLoggerCard">
+    <h2>Log a trade <em>entry</em></h2>
+    <div class="note" style="margin-bottom: 18px;">
+      Log when you enter the trade. Update the outcome and exit when the trade closes.
+    </div>
+    <div class="grid">
+      <div class="form-group">
+        <label>Trade Date</label>
+        <input type="date" id="tradeDate">
+      </div>
+      <div class="form-group">
+        <label>Setup Type</label>
+        <select id="setupType">
+          <option value="Support Bounce">Support Bounce</option>
+          <option value="Resistance Rejection">Resistance Rejection</option>
+          <option value="Breakout Retest">Breakout Retest</option>
+          <option value="Trend Pullback">Trend Pullback</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Direction</label>
+        <select id="tradeDirection">
+          <option value="Long">Long</option>
+          <option value="Short">Short</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Asset</label>
+        <input type="text" id="tradeAsset" value="CFG">
+      </div>
+      <div class="form-group">
+        <label>Entry ($)</label>
+        <input type="number" id="tradeEntry" step="0.0001">
+      </div>
+      <div class="form-group">
+        <label>Stop ($)</label>
+        <input type="number" id="tradeStop" step="0.0001">
+      </div>
+      <div class="form-group">
+        <label>Target ($)</label>
+        <input type="number" id="tradeTarget" step="0.0001">
+      </div>
+      <div class="form-group">
+        <label>Position Size ($)</label>
+        <input type="number" id="tradePosition" step="0.01">
+      </div>
+      <div class="form-group">
+        <label>Kelly Fraction Used</label>
+        <select id="tradeKellyFraction">
+          <option value="0.0625">1/16 Kelly (Capital Preservation)</option>
+          <option value="0.125">1/8 Kelly (Compound Growth)</option>
+          <option value="0.25" selected>1/4 Kelly (Standard Discipline)</option>
+          <option value="0.5">1/2 Kelly (High Conviction)</option>
+        </select>
+      </div>
+      <div class="form-group grid-full">
+        <label>Notes (emotional state, setup confluence, observations)</label>
+        <input type="text" id="tradeNotes" placeholder="Why you took this trade, how it feels, market context">
+      </div>
+    </div>
+    <button class="success" onclick="logTradeEntry()">Open trade →</button>
+  </div>
+
+  <div class="card" style="margin-top: 20px;">
+    <h2>Running <em>statistics</em> (closed trades)</h2>
+    <div class="stat-grid" style="grid-template-columns: repeat(4, 1fr);">
+      <div class="stat"><div class="stat-label">Closed Trades</div><div class="stat-value" id="tradesCount">0</div></div>
+      <div class="stat"><div class="stat-label">Win Rate</div><div class="stat-value accent" id="actualWinRate">—</div></div>
+      <div class="stat"><div class="stat-label">Wins / Losses</div><div class="stat-value" id="winLossCount">0 / 0</div></div>
+      <div class="stat"><div class="stat-label">Avg R (Winners)</div><div class="stat-value green" id="avgRWins">—</div></div>
+      <div class="stat"><div class="stat-label">Avg R (Losers)</div><div class="stat-value red" id="avgRLosses">—</div></div>
+      <div class="stat"><div class="stat-label">Total R</div><div class="stat-value" id="totalR">—</div></div>
+      <div class="stat"><div class="stat-label">Expected Value</div><div class="stat-value" id="expectedValue">—</div></div>
+      <div class="stat"><div class="stat-label">Largest Drawdown</div><div class="stat-value red" id="maxDrawdown">0%</div></div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top: 20px;">
+    <h2>Trade <em>history</em> (closed)</h2>
+    <div style="overflow-x: auto;">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th><th>Date</th><th>Setup</th><th>Dir</th>
+            <th>Entry</th><th>Stop</th><th>Target</th><th>Exit</th>
+            <th>Size</th><th>Kelly</th><th>P/L $</th><th>R</th><th>Outcome</th>
+            <th>Notes</th><th></th>
+          </tr>
+        </thead>
+        <tbody id="tradesBody">
+          <tr><td colspan="15" class="empty-state">No closed trades yet. Closed trades will appear here.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="action-row">
+      <button class="secondary" onclick="exportCSV()">↓ Export CSV</button>
+      <button class="danger" onclick="resetAll()">Reset all data</button>
+    </div>
+    <div class="note" style="margin-top: 18px;">
+      Your data is saved automatically in your browser. Export weekly as backup. Resetting is permanent.
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="halfKellyWarningModal">
+  <div class="modal warning-modal">
+    <h3>⚠ You're selecting Half Kelly</h3>
+    <div class="warning-content">
+      <p><strong>The math at 1/2 Kelly:</strong></p>
+      <p>Even with a verified 55% win rate and 2:1 R:R, this sizing produces approximately <strong>50% maximum drawdowns</strong> over time. Math says so — it's not avoidable at this fraction.</p>
+      <p><strong>Most traders cannot psychologically hold through a 50% account drawdown.</strong> They panic-close, abandon their system, or revenge trade their way to a blown account.</p>
+      <p><strong>Recommended only if you have:</strong></p>
+      <ul>
+        <li>100+ verified profitable trades on logged data</li>
+        <li>Edge confirmed across multiple market conditions</li>
+        <li>Demonstrated capacity to hold through 50% drawdowns without panic</li>
+        <li>Capital you can afford to lose half of without affecting your life</li>
+      </ul>
+      <p>If you're not sure whether you meet all four, pick 1/4 Kelly. You'll compound just fine and sleep at night.</p>
+    </div>
+    <div class="modal-actions">
+      <button class="secondary" onclick="cancelHalfKelly()">Use 1/4 Kelly instead</button>
+      <button class="warning" onclick="confirmHalfKelly()">I understand, proceed</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="closeTradeModal">
+  <div class="modal">
+    <h3>Close trade</h3>
+    <div class="form-group">
+      <label>Exit Price ($)</label>
+      <input type="number" id="modalExitPrice" step="0.0001">
+    </div>
+    <div class="form-group">
+      <label>Outcome</label>
+      <select id="modalOutcome">
+        <option value="win">Win (hit target)</option>
+        <option value="loss">Loss (hit stop)</option>
+        <option value="breakeven">Breakeven</option>
+        <option value="partial">Partial (exit before target)</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Closing Notes (what happened)</label>
+      <textarea id="modalCloseNotes" rows="3" placeholder="How did the trade play out? Did you follow rules?"></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="secondary" onclick="cancelCloseTrade()">Cancel</button>
+      <button class="success" onclick="confirmCloseTrade()">Close trade</button>
+    </div>
   </div>
 </div>
 
 <script>
-  let tradeCount = 0;
-  let csvTrades = [];
-  let currentMode = 'manual';
-  const MIN_TRADES = 30;
+  let state = JSON.parse(localStorage.getItem('kellyTracker')) || {
+    startBalance: 900, trades: [], openTrades: [], selectedKellyFraction: 0.25
+  };
+  if (!state.openTrades) state.openTrades = [];
+  if (!state.selectedKellyFraction) state.selectedKellyFraction = 0.25;
+  let tradeToClose = null;
+  document.getElementById('tradeDate').valueAsDate = new Date();
 
-  function switchMode(mode) {
-    currentMode = mode;
-    document.querySelectorAll('.input-mode-tab').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.input-mode-content').forEach(c => c.classList.remove('active'));
-    if (mode === 'manual') {
-      document.querySelectorAll('.input-mode-tab')[0].classList.add('active');
-      document.getElementById('manualMode').classList.add('active');
-    } else {
-      document.querySelectorAll('.input-mode-tab')[1].classList.add('active');
-      document.getElementById('csvMode').classList.add('active');
-    }
-    updateValidTradeCount();
+  function save() {
+    localStorage.setItem('kellyTracker', JSON.stringify(state));
+    updateDisplay();
+    recalculateAll();
   }
-
-  function addTradeRow(outcome = '', rMultiple = '') {
-    tradeCount++;
-    const container = document.getElementById('tradesContainer');
-    const row = document.createElement('div');
-    row.className = 'trade-row';
-    row.id = `trade-row-${tradeCount}`;
-    row.innerHTML = `
-      <div class="trade-num">${tradeCount}</div>
-      <select class="trade-outcome" onchange="updateValidTradeCount()">
-        <option value="">Select...</option>
-        <option value="win" ${outcome === 'win' ? 'selected' : ''}>Win</option>
-        <option value="loss" ${outcome === 'loss' ? 'selected' : ''}>Loss</option>
-        <option value="breakeven" ${outcome === 'breakeven' ? 'selected' : ''}>Breakeven</option>
-      </select>
-      <input type="number" class="trade-r" step="0.1" placeholder="2.0 win, -1.0 loss" value="${rMultiple}" oninput="updateValidTradeCount()">
-      <button class="delete-row" onclick="removeTrade(${tradeCount})">×</button>
-    `;
-    container.appendChild(row);
-    renumberTrades();
-    updateValidTradeCount();
+  function getCurrentBalance() {
+    return state.startBalance + state.trades.reduce((sum, t) => sum + t.pl, 0);
   }
-
-  function removeTrade(id) {
-    const row = document.getElementById(`trade-row-${id}`);
-    if (row) row.remove();
-    renumberTrades();
-    updateValidTradeCount();
-  }
-
-  function renumberTrades() {
-    const rows = document.querySelectorAll('.trade-row');
-    rows.forEach((row, index) => {
-      row.querySelector('.trade-num').textContent = index + 1;
+  function selectKelly(fraction) {
+    state.selectedKellyFraction = fraction;
+    document.querySelectorAll('.kelly-option').forEach(el => {
+      el.classList.toggle('selected', parseFloat(el.dataset.fraction) === fraction);
     });
+    document.getElementById('tradeKellyFraction').value = fraction.toString();
+    save();
   }
-
-  function getValidTrades() {
-    if (currentMode === 'manual') {
-      const rows = document.querySelectorAll('.trade-row');
-      const trades = [];
-      rows.forEach(row => {
-        const outcome = row.querySelector('.trade-outcome').value;
-        const rValue = parseFloat(row.querySelector('.trade-r').value);
-        if (outcome && !isNaN(rValue)) {
-          trades.push({ outcome, r: rValue });
-        }
+  function selectKellyHalf() {
+    document.getElementById('halfKellyWarningModal').classList.add('active');
+  }
+  function confirmHalfKelly() {
+    document.getElementById('halfKellyWarningModal').classList.remove('active');
+    selectKelly(0.5);
+  }
+  function cancelHalfKelly() {
+    document.getElementById('halfKellyWarningModal').classList.remove('active');
+    selectKelly(0.25);
+  }
+  function getKellyLabel(fraction) {
+    const labels = {
+      0.0625: '1/16 Kelly (Capital Preservation)',
+      0.125: '1/8 Kelly (Compound Growth)',
+      0.25: '1/4 Kelly (Standard Discipline)',
+      0.5: '1/2 Kelly (High Conviction)'
+    };
+    return labels[fraction] || `${fraction} Kelly`;
+  }
+  function getKellyShort(fraction) {
+    const labels = { 0.0625: '1/16', 0.125: '1/8', 0.25: '1/4', 0.5: '1/2' };
+    return labels[fraction] || fraction.toString();
+  }
+  function updateKelly() {
+    const winRate = parseFloat(document.getElementById('winRate').value) / 100;
+    const rr = parseFloat(document.getElementById('rrRatio').value);
+    if (isNaN(winRate) || isNaN(rr) || winRate <= 0 || winRate >= 1 || rr <= 0) {
+      ['fullKelly','riskPerTrade','activeKellyValue','opt-1-16','opt-1-8','opt-1-4','opt-1-2'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = '—';
       });
-      return trades;
+      return null;
+    }
+    const fullKelly = winRate - ((1 - winRate) / rr);
+    const currentBal = getCurrentBalance();
+    document.getElementById('opt-1-16').textContent = (fullKelly * 0.0625 * 100).toFixed(2) + '%';
+    document.getElementById('opt-1-8').textContent = (fullKelly * 0.125 * 100).toFixed(2) + '%';
+    document.getElementById('opt-1-4').textContent = (fullKelly * 0.25 * 100).toFixed(2) + '%';
+    document.getElementById('opt-1-2').textContent = (fullKelly * 0.5 * 100).toFixed(2) + '%';
+    document.getElementById('fullKelly').textContent = (fullKelly * 100).toFixed(2) + '%';
+    const activeKelly = fullKelly * state.selectedKellyFraction;
+    const riskDollar = currentBal * activeKelly;
+    document.getElementById('activeKellyLabel').textContent = `Active: ${getKellyLabel(state.selectedKellyFraction)}`;
+    document.getElementById('activeKellyValue').textContent = (activeKelly * 100).toFixed(2) + '%';
+    document.getElementById('riskPerTrade').textContent = '$' + riskDollar.toFixed(2);
+    return { fullKelly, activeKelly, riskDollar };
+  }
+  function updatePosition() {
+    const kelly = updateKelly();
+    if (!kelly) return;
+    const entry = parseFloat(document.getElementById('entryPrice').value);
+    const stop = parseFloat(document.getElementById('stopPrice').value);
+    const target = parseFloat(document.getElementById('targetPrice').value);
+    const posOut = document.getElementById('positionOutput');
+    const warning = document.getElementById('rrWarning');
+    if (isNaN(entry) || isNaN(stop) || entry <= 0 || stop <= 0 || entry === stop) {
+      ['stopDistance','positionSize','tokenAmount','riskAmount','rewardAmount','actualRR'].forEach(id => {
+        document.getElementById(id).textContent = '—';
+      });
+      posOut.classList.remove('warning-bg');
+      warning.style.display = 'none';
+      return;
+    }
+    const stopDistance = Math.abs(entry - stop) / entry;
+    const positionSize = kelly.riskDollar / stopDistance;
+    const tokens = positionSize / entry;
+    document.getElementById('stopDistance').textContent = (stopDistance * 100).toFixed(2) + '%';
+    document.getElementById('positionSize').textContent = '$' + positionSize.toFixed(2);
+    document.getElementById('tokenAmount').textContent = tokens.toFixed(2);
+    document.getElementById('riskAmount').textContent = '$' + kelly.riskDollar.toFixed(2);
+    if (!isNaN(target) && target > 0 && target !== entry) {
+      const targetDistance = Math.abs(target - entry) / entry;
+      const actualRR = targetDistance / stopDistance;
+      const rewardAmount = positionSize * targetDistance;
+      document.getElementById('rewardAmount').textContent = '$' + rewardAmount.toFixed(2);
+      document.getElementById('actualRR').textContent = actualRR.toFixed(2) + ':1';
+      if (actualRR < 1.5) {
+        posOut.classList.add('warning-bg');
+        warning.style.display = 'block';
+      } else {
+        posOut.classList.remove('warning-bg');
+        warning.style.display = 'none';
+      }
     } else {
-      return [...csvTrades];
+      document.getElementById('rewardAmount').textContent = '—';
+      document.getElementById('actualRR').textContent = '—';
+      posOut.classList.remove('warning-bg');
+      warning.style.display = 'none';
     }
   }
-
-  function updateValidTradeCount() {
-    const trades = getValidTrades();
-    const counter = document.getElementById('tradeCounter');
-    const thresholdMsg = document.getElementById('thresholdMessage');
-    const calcBtn = document.getElementById('calculateBtn');
-
-    if (counter) {
-      counter.textContent = trades.length;
-      counter.classList.remove('insufficient', 'minimum', 'good');
-
-      if (trades.length < MIN_TRADES) {
-        counter.classList.add('insufficient');
-        if (thresholdMsg) thresholdMsg.textContent = `Need ${MIN_TRADES - trades.length} more`;
-        if (calcBtn) calcBtn.disabled = true;
-      } else if (trades.length < 100) {
-        counter.classList.add('minimum');
-        if (thresholdMsg) thresholdMsg.textContent = 'Minimum reached';
-        if (calcBtn) calcBtn.disabled = false;
-      } else {
-        counter.classList.add('good');
-        if (thresholdMsg) thresholdMsg.textContent = 'Statistically reliable';
-        if (calcBtn) calcBtn.disabled = false;
+  function recalculateAll() { updateKelly(); updatePosition(); }
+  function fillTradeLogger() {
+    const entry = parseFloat(document.getElementById('entryPrice').value);
+    const stop = parseFloat(document.getElementById('stopPrice').value);
+    const target = parseFloat(document.getElementById('targetPrice').value);
+    const positionSizeText = document.getElementById('positionSize').textContent;
+    if (isNaN(entry) || isNaN(stop)) { alert('Fill in entry and stop prices first'); return; }
+    document.getElementById('tradeEntry').value = entry;
+    document.getElementById('tradeStop').value = stop;
+    if (!isNaN(target)) document.getElementById('tradeTarget').value = target;
+    document.getElementById('tradeKellyFraction').value = state.selectedKellyFraction.toString();
+    const positionNum = parseFloat(positionSizeText.replace('$', '').replace(',', ''));
+    if (!isNaN(positionNum)) document.getElementById('tradePosition').value = positionNum.toFixed(2);
+    document.getElementById('tradeLoggerCard').scrollIntoView({ behavior: 'smooth' });
+  }
+  function logTradeEntry() {
+    const date = document.getElementById('tradeDate').value;
+    const setup = document.getElementById('setupType').value;
+    const direction = document.getElementById('tradeDirection').value;
+    const asset = document.getElementById('tradeAsset').value;
+    const entry = parseFloat(document.getElementById('tradeEntry').value);
+    const stop = parseFloat(document.getElementById('tradeStop').value);
+    const target = parseFloat(document.getElementById('tradeTarget').value);
+    const position = parseFloat(document.getElementById('tradePosition').value);
+    const kellyFraction = parseFloat(document.getElementById('tradeKellyFraction').value);
+    const notes = document.getElementById('tradeNotes').value;
+    if (!date || isNaN(entry) || isNaN(stop) || isNaN(position)) {
+      alert('Please fill in date, entry, stop, and position size');
+      return;
+    }
+    const tokens = position / entry;
+    const riskDollar = Math.abs(entry - stop) * tokens;
+    const trade = {
+      id: Date.now(),
+      number: state.trades.length + state.openTrades.length + 1,
+      dateOpened: date, setup, direction, asset,
+      entry, stop, target, position, risk: riskDollar, kellyFraction, notes
+    };
+    state.openTrades.push(trade);
+    save();
+    document.getElementById('tradeNotes').value = '';
+    document.getElementById('tradeEntry').value = '';
+    document.getElementById('tradeStop').value = '';
+    document.getElementById('tradeTarget').value = '';
+    document.getElementById('tradePosition').value = '';
+    alert('Trade entry logged. Find it in Open Trades section above.');
+  }
+  function openCloseModal(tradeId) {
+    tradeToClose = tradeId;
+    document.getElementById('modalExitPrice').value = '';
+    document.getElementById('modalOutcome').value = 'win';
+    document.getElementById('modalCloseNotes').value = '';
+    document.getElementById('closeTradeModal').classList.add('active');
+  }
+  function cancelCloseTrade() {
+    tradeToClose = null;
+    document.getElementById('closeTradeModal').classList.remove('active');
+  }
+  function confirmCloseTrade() {
+    const exit = parseFloat(document.getElementById('modalExitPrice').value);
+    const outcome = document.getElementById('modalOutcome').value;
+    const closeNotes = document.getElementById('modalCloseNotes').value;
+    if (isNaN(exit)) { alert('Please enter a valid exit price'); return; }
+    const tradeIndex = state.openTrades.findIndex(t => t.id === tradeToClose);
+    if (tradeIndex === -1) return;
+    const openTrade = state.openTrades[tradeIndex];
+    const tokens = openTrade.position / openTrade.entry;
+    let pl = openTrade.direction === 'Long' ? (exit - openTrade.entry) * tokens : (openTrade.entry - exit) * tokens;
+    const stopDistance = Math.abs(openTrade.entry - openTrade.stop);
+    const exitDistance = openTrade.direction === 'Long' ? exit - openTrade.entry : openTrade.entry - exit;
+    const rMultiple = exitDistance / stopDistance;
+    const closedTrade = {
+      ...openTrade,
+      dateClosed: new Date().toISOString().split('T')[0],
+      exit, outcome, pl, rMultiple,
+      notes: openTrade.notes + (closeNotes ? ' | CLOSE: ' + closeNotes : '')
+    };
+    state.trades.push(closedTrade);
+    state.openTrades.splice(tradeIndex, 1);
+    save();
+    document.getElementById('closeTradeModal').classList.remove('active');
+    tradeToClose = null;
+  }
+  function deleteOpenTrade(id) {
+    if (confirm('Delete this open trade? This cannot be undone.')) {
+      state.openTrades = state.openTrades.filter(t => t.id !== id);
+      save();
+    }
+  }
+  function deleteTrade(id) {
+    if (confirm('Delete this trade? This cannot be undone.')) {
+      state.trades = state.trades.filter(t => t.id !== id);
+      state.trades.forEach((t, i) => t.number = i + 1);
+      save();
+    }
+  }
+  function updateStartBalance() {
+    const newStart = parseFloat(document.getElementById('editStart').value);
+    if (isNaN(newStart) || newStart <= 0) { alert('Enter a valid balance'); return; }
+    if (state.trades.length > 0 || state.openTrades.length > 0) {
+      alert('Cannot change starting balance after logging trades. Reset all data if you need to start over.');
+      return;
+    }
+    state.startBalance = newStart;
+    save();
+    document.getElementById('editStart').value = '';
+  }
+  function resetAll() {
+    if (confirm('This will permanently delete all your trades and reset the tracker. Are you sure?')) {
+      if (confirm('Really sure? This cannot be undone.')) {
+        state = { startBalance: 900, trades: [], openTrades: [], selectedKellyFraction: 0.25 };
+        save();
       }
     }
   }
-
-  function downloadTemplate() {
-    let csv = 'Trade,Outcome,R\n';
-    for (let i = 1; i <= 30; i++) {
-      csv += `${i},,\n`;
-    }
+  function exportCSV() {
+    if (state.trades.length === 0 && state.openTrades.length === 0) { alert('No trades to export'); return; }
+    const headers = ['#','Status','Date Opened','Date Closed','Setup','Direction','Asset','Entry','Stop','Target','Exit','Position $','Kelly Fraction','P/L $','R Multiple','Outcome','Notes'];
+    const closedRows = state.trades.map(t => [
+      t.number, 'CLOSED', t.dateOpened || t.date || '', t.dateClosed || '', t.setup, t.direction, t.asset,
+      t.entry, t.stop, t.target, t.exit, t.position.toFixed(2),
+      t.kellyFraction ? getKellyShort(t.kellyFraction) : '1/4',
+      t.pl.toFixed(2), t.rMultiple.toFixed(2), t.outcome,
+      `"${(t.notes || '').replace(/"/g, '""')}"`
+    ]);
+    const openRows = state.openTrades.map(t => [
+      t.number, 'OPEN', t.dateOpened, '', t.setup, t.direction, t.asset,
+      t.entry, t.stop, t.target, '', t.position.toFixed(2),
+      t.kellyFraction ? getKellyShort(t.kellyFraction) : '1/4',
+      '', '', 'open',
+      `"${(t.notes || '').replace(/"/g, '""')}"`
+    ]);
+    const csv = [headers.join(','), ...closedRows.map(r => r.join(',')), ...openRows.map(r => r.join(','))].join('\n');
     const blob = new Blob([csv], { type: 'text/csv' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'exec8-trade-template.csv';
+    a.download = `exec8-kelly-${new Date().toISOString().split('T')[0]}.csv`;
     a.click();
     URL.revokeObjectURL(url);
   }
-
-  function handleCSVUpload(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = function(e) { parseCSV(e.target.result); };
-    reader.readAsText(file);
-  }
-
-  function parseCSV(text) {
-    const status = document.getElementById('csvStatus');
-    status.classList.remove('error', 'warning', 'active');
-    csvTrades = [];
-
-    try {
-      const lines = text.trim().split('\n').filter(l => l.trim());
-      if (lines.length < 2) {
-        throw new Error('CSV is empty or has no data rows');
-      }
-
-      const headerLine = lines[0].toLowerCase();
-      const headers = headerLine.split(',').map(h => h.trim().replace(/['"]/g, ''));
-      const tradeIdx = headers.findIndex(h => h === 'trade' || h === '#' || h === 'number');
-      const outcomeIdx = headers.findIndex(h => h === 'outcome' || h === 'result');
-      const rIdx = headers.findIndex(h => h === 'r' || h === 'r multiple' || h === 'rmultiple');
-
-      if (outcomeIdx === -1 || rIdx === -1) {
-        throw new Error('CSV must have "Outcome" and "R" columns');
-      }
-
-      for (let i = 1; i < lines.length; i++) {
-        const cells = lines[i].split(',').map(c => c.trim().replace(/['"]/g, ''));
-        const outcome = cells[outcomeIdx]?.toLowerCase();
-        const rValue = parseFloat(cells[rIdx]);
-        if (!['win', 'loss', 'breakeven', 'be'].includes(outcome)) continue;
-        if (isNaN(rValue)) continue;
-        csvTrades.push({
-          outcome: outcome === 'be' ? 'breakeven' : outcome,
-          r: rValue
-        });
-      }
-
-      if (csvTrades.length === 0) {
-        throw new Error('No valid trades found in CSV. Check format and try again.');
-      }
-
-      const calcBtn = document.getElementById('csvCalculateBtn');
-
-      if (csvTrades.length < MIN_TRADES) {
-        status.textContent = `⚠ Loaded ${csvTrades.length} trades, but minimum is ${MIN_TRADES}. Add ${MIN_TRADES - csvTrades.length} more trades and re-upload.`;
-        status.classList.add('warning', 'active');
-        calcBtn.style.display = 'none';
-        calcBtn.disabled = true;
-      } else {
-        status.textContent = `✓ Loaded ${csvTrades.length} trades from CSV. Click below to see your stats.`;
-        status.classList.add('active');
-        calcBtn.style.display = 'inline-block';
-        calcBtn.disabled = false;
-      }
-    } catch (e) {
-      status.textContent = `✗ Error: ${e.message}`;
-      status.classList.add('error', 'active');
-      csvTrades = [];
-      const calcBtn = document.getElementById('csvCalculateBtn');
-      calcBtn.style.display = 'none';
-      calcBtn.disabled = true;
+  function updateDisplay() {
+    const currentBal = getCurrentBalance();
+    const totalPL = currentBal - state.startBalance;
+    const returnPct = state.startBalance > 0 ? (totalPL / state.startBalance) * 100 : 0;
+    document.getElementById('startBalance').textContent = '$' + state.startBalance.toFixed(2);
+    document.getElementById('currentBalance').textContent = '$' + currentBal.toFixed(2);
+    const plEl = document.getElementById('totalPL');
+    plEl.textContent = (totalPL >= 0 ? '+$' : '-$') + Math.abs(totalPL).toFixed(2);
+    plEl.className = 'stat-value ' + (totalPL >= 0 ? 'green' : 'red');
+    const returnEl = document.getElementById('returnPct');
+    returnEl.textContent = (returnPct >= 0 ? '+' : '') + returnPct.toFixed(2) + '%';
+    returnEl.className = 'stat-value ' + (returnPct >= 0 ? 'green' : 'red');
+    const totalTrades = state.trades.length + state.openTrades.length;
+    const progress = Math.min((totalTrades / 20) * 100, 100);
+    document.getElementById('progressFill').style.width = progress + '%';
+    document.getElementById('progressText').textContent = `${totalTrades} / 20 trades`;
+    document.getElementById('progressBadge').textContent = `${totalTrades} / 20 trades`;
+    const openCard = document.getElementById('openTradesCard');
+    const openBody = document.getElementById('openTradesBody');
+    if (state.openTrades.length === 0) { openCard.style.display = 'none'; }
+    else {
+      openCard.style.display = 'block';
+      openBody.innerHTML = state.openTrades.map(t => `
+        <tr class="open-trade">
+          <td>${t.number}</td><td>${t.dateOpened}</td><td>${t.setup}</td><td>${t.direction}</td>
+          <td>$${t.entry}</td><td>$${t.stop}</td><td>$${t.target || '-'}</td>
+          <td>$${t.position.toFixed(2)}</td><td>$${t.risk.toFixed(2)}</td>
+          <td>${t.kellyFraction ? getKellyShort(t.kellyFraction) : '1/4'}</td>
+          <td title="${t.notes || ''}">${(t.notes || '').length > 25 ? (t.notes || '').substring(0, 25) + '...' : (t.notes || '')}</td>
+          <td>
+            <button class="close-btn" onclick="openCloseModal(${t.id})">Close</button>
+            <button class="delete-btn" onclick="deleteOpenTrade(${t.id})">×</button>
+          </td>
+        </tr>
+      `).join('');
     }
-  }
-
-  function calculateResults() {
-    const trades = getValidTrades();
-
-    if (trades.length < MIN_TRADES) {
-      const warning = document.getElementById('emptyWarning');
-      if (currentMode === 'manual') warning.style.display = 'block';
-      document.getElementById('resultsCard').classList.remove('active');
-      return;
+    const trades = state.trades;
+    const wins = trades.filter(t => t.outcome === 'win' || (t.outcome === 'partial' && t.pl > 0));
+    const losses = trades.filter(t => t.outcome === 'loss' || (t.outcome === 'partial' && t.pl < 0));
+    document.getElementById('tradesCount').textContent = trades.length;
+    document.getElementById('winLossCount').textContent = `${wins.length} / ${losses.length}`;
+    if (trades.length > 0) {
+      const decisiveTrades = wins.length + losses.length;
+      if (decisiveTrades > 0) {
+        document.getElementById('actualWinRate').textContent = ((wins.length / decisiveTrades) * 100).toFixed(1) + '%';
+      }
+      if (wins.length > 0) {
+        const avgRWin = wins.reduce((s, t) => s + t.rMultiple, 0) / wins.length;
+        document.getElementById('avgRWins').textContent = avgRWin.toFixed(2) + 'R';
+      }
+      if (losses.length > 0) {
+        const avgRLoss = losses.reduce((s, t) => s + t.rMultiple, 0) / losses.length;
+        document.getElementById('avgRLosses').textContent = avgRLoss.toFixed(2) + 'R';
+      }
+      const totalR = trades.reduce((s, t) => s + t.rMultiple, 0);
+      const totalREl = document.getElementById('totalR');
+      totalREl.textContent = (totalR >= 0 ? '+' : '') + totalR.toFixed(2) + 'R';
+      totalREl.className = 'stat-value ' + (totalR >= 0 ? 'green' : 'red');
+      const ev = trades.length > 0 ? totalR / trades.length : 0;
+      const evEl = document.getElementById('expectedValue');
+      evEl.textContent = (ev >= 0 ? '+' : '') + ev.toFixed(2) + 'R';
+      evEl.className = 'stat-value ' + (ev >= 0 ? 'green' : 'red');
+      let peak = state.startBalance;
+      let maxDD = 0;
+      let runningBal = state.startBalance;
+      trades.forEach(t => {
+        runningBal += t.pl;
+        if (runningBal > peak) peak = runningBal;
+        const dd = ((peak - runningBal) / peak) * 100;
+        if (dd > maxDD) maxDD = dd;
+      });
+      document.getElementById('maxDrawdown').textContent = '-' + maxDD.toFixed(2) + '%';
     }
-    document.getElementById('emptyWarning').style.display = 'none';
-
-    const wins = trades.filter(t => t.outcome === 'win');
-    const losses = trades.filter(t => t.outcome === 'loss');
-    const decisive = wins.length + losses.length;
-
-    const winRate = decisive > 0 ? wins.length / decisive : 0;
-    const avgWin = wins.length > 0 ? wins.reduce((s, t) => s + Math.abs(t.r), 0) / wins.length : 0;
-    const avgLoss = losses.length > 0 ? losses.reduce((s, t) => s + Math.abs(t.r), 0) / losses.length : 0;
-    const avgRR = avgLoss > 0 ? avgWin / avgLoss : 0;
-    const ev = (winRate * avgWin) - ((1 - winRate) * avgLoss);
-
-    document.getElementById('totalTrades').textContent = trades.length;
-    document.getElementById('winRateValue').textContent = (winRate * 100).toFixed(1) + '%';
-    document.getElementById('avgWin').textContent = '+' + avgWin.toFixed(2) + 'R';
-    document.getElementById('avgLoss').textContent = '-' + avgLoss.toFixed(2) + 'R';
-    document.getElementById('avgRR').textContent = avgRR.toFixed(2) + ':1';
-
-    const evEl = document.getElementById('expectedValue');
-    evEl.textContent = (ev >= 0 ? '+' : '') + ev.toFixed(2) + 'R';
-    evEl.className = 'value ' + (ev >= 0 ? 'green' : 'red');
-
-    const reliabilityBanner = document.getElementById('reliabilityBanner');
-    let reliabilityHTML = '';
-    if (trades.length < 50) {
-      reliabilityHTML = `<div class="reliability-banner warning">
-        <strong>Directional read only</strong>
-        ${trades.length} trades is the minimum threshold. Confidence interval is ±18%, so your "${(winRate * 100).toFixed(0)}% win rate" could realistically be anywhere from ${Math.max(0, (winRate * 100 - 18)).toFixed(0)}% to ${Math.min(100, (winRate * 100 + 18)).toFixed(0)}% in reality. Treat as directional, not definitive.
-      </div>`;
-    } else if (trades.length < 100) {
-      reliabilityHTML = `<div class="reliability-banner moderate">
-        <strong>Moderately reliable</strong>
-        ${trades.length} trades gives a ±14% confidence interval. Your numbers are useful for decision-making but still have variance. Continue logging to refine.
-      </div>`;
+    const tbody = document.getElementById('tradesBody');
+    if (trades.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="15" class="empty-state">No closed trades yet. Closed trades will appear here.</td></tr>';
     } else {
-      reliabilityHTML = `<div class="reliability-banner high">
-        <strong>Statistically reliable</strong>
-        ${trades.length} trades produces a confidence interval of ±${(98 / Math.sqrt(trades.length)).toFixed(0)}% or better. Your edge measurement is now solid enough to size with confidence.
-      </div>`;
+      tbody.innerHTML = trades.slice().reverse().map(t => {
+        const outcomeClass = t.outcome === 'win' ? 'win' : t.outcome === 'loss' ? 'loss' : 'be';
+        const plDisplay = (t.pl >= 0 ? '+$' : '-$') + Math.abs(t.pl).toFixed(2);
+        const rDisplay = (t.rMultiple >= 0 ? '+' : '') + t.rMultiple.toFixed(2) + 'R';
+        return `<tr>
+          <td>${t.number}</td><td>${t.dateOpened || t.date || ''}</td><td>${t.setup}</td><td>${t.direction}</td>
+          <td>$${t.entry}</td><td>$${t.stop}</td><td>$${t.target || '-'}</td><td>$${t.exit}</td>
+          <td>$${t.position.toFixed(2)}</td>
+          <td>${t.kellyFraction ? getKellyShort(t.kellyFraction) : '1/4'}</td>
+          <td class="${outcomeClass}">${plDisplay}</td>
+          <td class="${outcomeClass}">${rDisplay}</td>
+          <td class="${outcomeClass}">${t.outcome}</td>
+          <td title="${t.notes || ''}">${(t.notes || '').length > 25 ? (t.notes || '').substring(0, 25) + '...' : (t.notes || '')}</td>
+          <td><button class="delete-btn" onclick="deleteTrade(${t.id})">×</button></td>
+        </tr>`;
+      }).join('');
     }
-    reliabilityBanner.innerHTML = reliabilityHTML;
-
-    const verdictContent = document.getElementById('verdictContent');
-    let verdictHTML = '';
-
-    if (ev > 0.3) {
-      verdictHTML += `<p><strong class="positive">Positive edge detected.</strong> Your expected value per trade is +${ev.toFixed(2)}R. If this holds across continued trades, your system is profitable.</p>`;
-    } else if (ev > 0) {
-      verdictHTML += `<p><strong class="neutral">Slight positive edge.</strong> EV is +${ev.toFixed(2)}R per trade. This is barely profitable and could turn negative with bad variance. Need more trades to confirm.</p>`;
-    } else if (ev > -0.2) {
-      verdictHTML += `<p><strong class="neutral">Roughly breakeven.</strong> EV is ${ev.toFixed(2)}R. You're not losing badly but you're not really making money either. Need to identify what's holding you back.</p>`;
-    } else {
-      verdictHTML += `<p><strong class="negative">Negative edge currently.</strong> EV is ${ev.toFixed(2)}R per trade. At this rate you'll bleed money over time. Either your win rate is too low, your losers are too big, or both.</p>`;
-    }
-
-    if (winRate < 0.4) {
-      verdictHTML += `<p><strong>Low win rate (${(winRate * 100).toFixed(1)}%).</strong> You need bigger winners to compensate. Your current avg R:R of ${avgRR.toFixed(2)}:1 ${avgRR >= 2.5 ? 'compensates for the low win rate.' : 'is not big enough to compensate. You need 2.5:1 minimum at this win rate.'}</p>`;
-    } else if (winRate >= 0.6) {
-      verdictHTML += `<p><strong>High win rate (${(winRate * 100).toFixed(1)}%).</strong> You can run with smaller R:R because you win often. Your current ${avgRR.toFixed(2)}:1 is ${avgRR >= 1.5 ? 'good.' : 'okay but you might be cutting winners too early.'}</p>`;
-    }
-
-    if (avgLoss > avgWin && wins.length > 0) {
-      verdictHTML += `<p><strong class="negative">Your losers are bigger than your winners.</strong> Average loss ${avgLoss.toFixed(2)}R vs average win ${avgWin.toFixed(2)}R. This is a sign of cutting winners too early or letting losers run. You need to fix this before sizing matters.</p>`;
-    }
-
-    verdictContent.innerHTML = verdictHTML;
-
-    const fullKelly = winRate - ((1 - winRate) / avgRR);
-    const quarterKelly = fullKelly * 0.25;
-    const kellyRec = document.getElementById('kellyRecommendation');
-    const kellyHeader = document.getElementById('kellyHeader');
-
-    let kellyExplanation = '';
-    let kellyValue = '';
-    let kellyLabel = '';
-
-    kellyRec.classList.remove('locked');
-
-    if (fullKelly <= 0) {
-      kellyRec.classList.add('locked');
-      kellyHeader.textContent = "Position sizing: don't trade yet";
-      kellyExplanation = "Your current numbers don't support any positive sizing. Kelly Criterion says with this edge, you shouldn't be trading at all. Focus on improving your edge before sizing matters.";
-      kellyValue = "Don't trade";
-      kellyLabel = 'Negative expected value';
-    } else if (trades.length < 50) {
-      kellyRec.classList.add('locked');
-      kellyHeader.textContent = 'Sizing recommendation locked';
-      kellyExplanation = `With only ${trades.length} trades, the Kelly recommendation isn't reliable yet. Use 1-2% per trade max while you build sample size. Re-run this calculation after you have 50+ trades.`;
-      kellyValue = '1-2%';
-      kellyLabel = 'Conservative until 50+ trades';
-    } else if (fullKelly < 0.05) {
-      kellyExplanation = "Your edge is small. Kelly suggests minimal sizing while you work on improving your strategy. Don't risk more than 0.5-1% per trade.";
-      kellyValue = (quarterKelly * 100).toFixed(2) + '%';
-      kellyLabel = 'Quarter Kelly per trade';
-    } else if (fullKelly < 0.20) {
-      kellyExplanation = 'You have a real but moderate edge. Quarter Kelly sizing protects you while still letting you compound. This is the standard professional approach.';
-      kellyValue = (quarterKelly * 100).toFixed(2) + '%';
-      kellyLabel = 'Quarter Kelly per trade';
-    } else {
-      kellyExplanation = 'You have a strong edge based on these numbers. Quarter Kelly is recommended (16-20% range can lead to 50%+ drawdowns). If you have 100+ verified trades, you could consider 1/2 Kelly.';
-      kellyValue = (quarterKelly * 100).toFixed(2) + '%';
-      kellyLabel = 'Quarter Kelly per trade';
-    }
-
-    document.getElementById('kellyExplanation').textContent = kellyExplanation;
-    document.getElementById('recommendedKelly').textContent = kellyValue;
-    document.getElementById('recommendedKellyLabel').textContent = kellyLabel;
-
-    document.getElementById('resultsCard').classList.add('active');
-    document.getElementById('resultsCard').scrollIntoView({ behavior: 'smooth' });
   }
-
-  const uploadArea = document.getElementById('csvUploadArea');
-  uploadArea.addEventListener('dragover', (e) => {
-    e.preventDefault();
-    uploadArea.classList.add('dragover');
+  ['winRate', 'rrRatio', 'entryPrice', 'stopPrice', 'targetPrice'].forEach(id => {
+    document.getElementById(id).addEventListener('input', recalculateAll);
   });
-  uploadArea.addEventListener('dragleave', () => {
-    uploadArea.classList.remove('dragover');
+  document.querySelectorAll('.kelly-option').forEach(el => {
+    el.classList.toggle('selected', parseFloat(el.dataset.fraction) === state.selectedKellyFraction);
   });
-  uploadArea.addEventListener('drop', (e) => {
-    e.preventDefault();
-    uploadArea.classList.remove('dragover');
-    const file = e.dataTransfer.files[0];
-    if (file && file.name.endsWith('.csv')) {
-      const reader = new FileReader();
-      reader.onload = function(ev) { parseCSV(ev.target.result); };
-      reader.readAsText(file);
-    } else {
-      const status = document.getElementById('csvStatus');
-      status.textContent = '✗ Please drop a .csv file';
-      status.classList.add('error', 'active');
-    }
-  });
-
-  for (let i = 0; i < 30; i++) {
-    addTradeRow();
-  }
+  updateDisplay();
+  recalculateAll();
 </script>
 </body>
 </html>
