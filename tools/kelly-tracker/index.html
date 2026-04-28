@@ -572,19 +572,19 @@
     <div class="stat-grid">
       <div class="stat">
         <div class="stat-label">Starting Balance</div>
-        <div class="stat-value" id="startBalance">$900.00</div>
+        <div class="stat-value" id="startBalance">—</div>
       </div>
       <div class="stat">
         <div class="stat-label">Current Balance</div>
-        <div class="stat-value accent" id="currentBalance">$900.00</div>
+        <div class="stat-value accent" id="currentBalance">—</div>
       </div>
       <div class="stat">
         <div class="stat-label">Total P/L (closed)</div>
-        <div class="stat-value" id="totalPL">$0.00</div>
+        <div class="stat-value" id="totalPL">—</div>
       </div>
       <div class="stat">
         <div class="stat-label">Return %</div>
-        <div class="stat-value" id="returnPct">0.00%</div>
+        <div class="stat-value" id="returnPct">—</div>
       </div>
     </div>
     <div class="progress-bar">
@@ -592,11 +592,12 @@
       <div class="progress-text" id="progressText">0 / 20 trades</div>
     </div>
     <div class="form-group" style="margin-top: 18px;">
-      <label>Update starting balance (only if not started)</label>
+      <label>Set your starting balance to begin</label>
       <div style="display: flex; gap: 10px;">
-        <input type="number" id="editStart" step="0.01" placeholder="900.00">
-        <button class="secondary" onclick="updateStartBalance()">Update</button>
+        <input type="number" id="editStart" step="0.01" placeholder="e.g. 1000">
+        <button class="secondary" onclick="updateStartBalance()">Set</button>
       </div>
+      <div class="note" style="margin-top: 8px;">In your trading currency. Used to calculate position size and risk per trade. Locked once you log your first trade.</div>
     </div>
   </div>
 
@@ -666,7 +667,7 @@
         </div>
         <div class="kelly-row">
           <span class="label">Risk per Trade ($)</span>
-          <span class="value" id="riskPerTrade">$73.13</span>
+          <span class="value" id="riskPerTrade">— set balance</span>
         </div>
       </div>
       <div class="note" style="margin-top: 14px;">
@@ -909,7 +910,7 @@
 
 <script>
   let state = JSON.parse(localStorage.getItem('kellyTracker')) || {
-    startBalance: 900, trades: [], openTrades: [], selectedKellyFraction: 0.25
+    startBalance: null, trades: [], openTrades: [], selectedKellyFraction: 0.25
   };
   if (!state.openTrades) state.openTrades = [];
   if (!state.selectedKellyFraction) state.selectedKellyFraction = 0.25;
@@ -922,6 +923,7 @@
     recalculateAll();
   }
   function getCurrentBalance() {
+    if (state.startBalance === null || state.startBalance === undefined) return null;
     return state.startBalance + state.trades.reduce((sum, t) => sum + t.pl, 0);
   }
   function selectKelly(fraction) {
@@ -974,9 +976,13 @@
     document.getElementById('opt-1-2').textContent = (fullKelly * 0.5 * 100).toFixed(2) + '%';
     document.getElementById('fullKelly').textContent = (fullKelly * 100).toFixed(2) + '%';
     const activeKelly = fullKelly * state.selectedKellyFraction;
-    const riskDollar = currentBal * activeKelly;
     document.getElementById('activeKellyLabel').textContent = `Active: ${getKellyLabel(state.selectedKellyFraction)}`;
     document.getElementById('activeKellyValue').textContent = (activeKelly * 100).toFixed(2) + '%';
+    if (currentBal === null) {
+      document.getElementById('riskPerTrade').textContent = '— set balance first';
+      return { fullKelly, activeKelly, riskDollar: null };
+    }
+    const riskDollar = currentBal * activeKelly;
     document.getElementById('riskPerTrade').textContent = '$' + riskDollar.toFixed(2);
     return { fullKelly, activeKelly, riskDollar };
   }
@@ -997,9 +1003,19 @@
       return;
     }
     const stopDistance = Math.abs(entry - stop) / entry;
+    document.getElementById('stopDistance').textContent = (stopDistance * 100).toFixed(2) + '%';
+
+    if (kelly.riskDollar === null) {
+      ['positionSize','tokenAmount','riskAmount','rewardAmount','actualRR'].forEach(id => {
+        document.getElementById(id).textContent = '— set balance';
+      });
+      posOut.classList.remove('warning-bg');
+      warning.style.display = 'none';
+      return;
+    }
+
     const positionSize = kelly.riskDollar / stopDistance;
     const tokens = positionSize / entry;
-    document.getElementById('stopDistance').textContent = (stopDistance * 100).toFixed(2) + '%';
     document.getElementById('positionSize').textContent = '$' + positionSize.toFixed(2);
     document.getElementById('tokenAmount').textContent = tokens.toFixed(2);
     document.getElementById('riskAmount').textContent = '$' + kelly.riskDollar.toFixed(2);
@@ -1133,7 +1149,7 @@
   function resetAll() {
     if (confirm('This will permanently delete all your trades and reset the tracker. Are you sure?')) {
       if (confirm('Really sure? This cannot be undone.')) {
-        state = { startBalance: 900, trades: [], openTrades: [], selectedKellyFraction: 0.25 };
+        state = { startBalance: null, trades: [], openTrades: [], selectedKellyFraction: 0.25 };
         save();
       }
     }
@@ -1166,16 +1182,27 @@
   }
   function updateDisplay() {
     const currentBal = getCurrentBalance();
-    const totalPL = currentBal - state.startBalance;
-    const returnPct = state.startBalance > 0 ? (totalPL / state.startBalance) * 100 : 0;
-    document.getElementById('startBalance').textContent = '$' + state.startBalance.toFixed(2);
-    document.getElementById('currentBalance').textContent = '$' + currentBal.toFixed(2);
-    const plEl = document.getElementById('totalPL');
-    plEl.textContent = (totalPL >= 0 ? '+$' : '-$') + Math.abs(totalPL).toFixed(2);
-    plEl.className = 'stat-value ' + (totalPL >= 0 ? 'green' : 'red');
-    const returnEl = document.getElementById('returnPct');
-    returnEl.textContent = (returnPct >= 0 ? '+' : '') + returnPct.toFixed(2) + '%';
-    returnEl.className = 'stat-value ' + (returnPct >= 0 ? 'green' : 'red');
+    if (state.startBalance === null || state.startBalance === undefined) {
+      document.getElementById('startBalance').textContent = '—';
+      document.getElementById('currentBalance').textContent = '—';
+      const plEl = document.getElementById('totalPL');
+      plEl.textContent = '—';
+      plEl.className = 'stat-value';
+      const returnEl = document.getElementById('returnPct');
+      returnEl.textContent = '—';
+      returnEl.className = 'stat-value';
+    } else {
+      const totalPL = currentBal - state.startBalance;
+      const returnPct = state.startBalance > 0 ? (totalPL / state.startBalance) * 100 : 0;
+      document.getElementById('startBalance').textContent = '$' + state.startBalance.toFixed(2);
+      document.getElementById('currentBalance').textContent = '$' + currentBal.toFixed(2);
+      const plEl = document.getElementById('totalPL');
+      plEl.textContent = (totalPL >= 0 ? '+$' : '-$') + Math.abs(totalPL).toFixed(2);
+      plEl.className = 'stat-value ' + (totalPL >= 0 ? 'green' : 'red');
+      const returnEl = document.getElementById('returnPct');
+      returnEl.textContent = (returnPct >= 0 ? '+' : '') + returnPct.toFixed(2) + '%';
+      returnEl.className = 'stat-value ' + (returnPct >= 0 ? 'green' : 'red');
+    }
     const totalTrades = state.trades.length + state.openTrades.length;
     const progress = Math.min((totalTrades / 20) * 100, 100);
     document.getElementById('progressFill').style.width = progress + '%';
