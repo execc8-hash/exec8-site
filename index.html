@@ -188,6 +188,43 @@ a{color:inherit;text-decoration:none}
 .reveal{opacity:0;transform:translateY(24px);transition:opacity 0.9s ease,transform 0.9s ease}
 .reveal.is-visible{opacity:1;transform:translateY(0)}
 
+/* ── how it works ── */
+.howitworks{background:var(--bg-2);border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);position:relative;z-index:2}
+.howitworks-inner{max-width:1240px;margin:0 auto;padding:140px 36px;position:relative}
+@media(max-width:760px){.howitworks-inner{padding:90px 24px}}
+.howitworks-head{margin-bottom:72px}
+.howitworks-head h2{font-family:var(--serif);font-size:clamp(36px,5vw,60px);font-weight:300;letter-spacing:-0.022em;line-height:1.05;color:var(--ink);max-width:760px}
+.howitworks-head h2 em{font-style:italic;color:var(--acc);font-weight:400}
+.howitworks-opener{max-width:780px;margin-bottom:80px}
+.howitworks-opener-stat{font-family:var(--serif);font-size:clamp(24px,3.2vw,34px);font-weight:300;line-height:1.3;letter-spacing:-0.015em;color:var(--ink);margin-bottom:28px}
+.howitworks-opener-stat em{font-style:italic;color:var(--acc);font-weight:400}
+.howitworks-opener-stat strong{color:var(--acc);font-weight:400;font-style:normal}
+.howitworks-opener-tail{font-size:16px;line-height:1.7;color:var(--ink-2);max-width:620px}
+.mechanism{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--rule);border:1px solid var(--rule);margin-bottom:72px}
+@media(max-width:860px){.mechanism{grid-template-columns:1fr}}
+.mechanism-side{background:var(--bg);padding:36px 32px}
+.mechanism-side-bad{background:var(--bg)}
+.mechanism-side-good{background:var(--bg)}
+.mechanism-label{font-family:var(--mono);font-size:10px;letter-spacing:0.16em;text-transform:uppercase;color:var(--ink-3);margin-bottom:6px;font-weight:500}
+.mechanism-label.bad{color:var(--neg)}
+.mechanism-label.good{color:var(--acc)}
+.mechanism-title{font-family:var(--serif);font-size:22px;font-weight:300;line-height:1.2;letter-spacing:-0.015em;color:var(--ink);margin-bottom:24px;font-style:italic}
+.mechanism-flow{display:flex;flex-direction:column;gap:0}
+.mechanism-step{font-family:var(--mono);font-size:13px;color:var(--ink-2);padding:10px 0;display:flex;align-items:center;gap:12px;letter-spacing:0.02em}
+.mechanism-step::before{content:"↓";color:var(--ink-4);font-size:14px;display:none}
+.mechanism-step:not(:first-child)::before{display:inline-block;margin-right:4px}
+.mechanism-step.terminal{color:var(--neg);font-weight:500}
+.mechanism-step.terminal-good{color:var(--acc);font-weight:500}
+.mechanism-step.loop::before{content:"↻"}
+.principles-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--rule);border:1px solid var(--rule);margin-bottom:48px}
+@media(max-width:760px){.principles-grid{grid-template-columns:1fr}}
+.principle{background:var(--bg);padding:28px 26px}
+.principle-num{font-family:var(--mono);font-size:10px;letter-spacing:0.14em;color:var(--acc);margin-bottom:14px;font-weight:500}
+.principle-title{font-family:var(--mono);font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-3);margin-bottom:10px;font-weight:500}
+.principle-text{font-family:var(--serif);font-size:18px;font-weight:300;font-style:italic;line-height:1.4;color:var(--ink);letter-spacing:-0.01em}
+.howitworks-closer{font-family:var(--serif);font-size:clamp(22px,2.8vw,30px);font-weight:300;line-height:1.3;letter-spacing:-0.015em;color:var(--ink);max-width:680px;text-align:left;padding-top:48px;border-top:1px solid var(--rule)}
+.howitworks-closer em{font-style:italic;color:var(--acc);font-weight:400}
+
 /* ── start here / measure-size-execute ── */
 .start-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--rule);border:1px solid var(--rule)}
 @media(max-width:860px){.start-grid{grid-template-columns:1fr}}
@@ -241,8 +278,8 @@ a{color:inherit;text-decoration:none}
     <a href="/" class="brand">EXEC<span class="brand-mark">8</span></a>
     <div class="nav-links">
       <a href="#start">Start here</a>
+      <a href="#how">How it works</a>
       <a href="#modules">Modules</a>
-      <a href="#system">The system</a>
       <a href="#founder">About</a>
       <a href="https://www.youtube.com/@TradersMonopoly" target="_blank" rel="noopener">YouTube</a>
     </div>
@@ -262,7 +299,7 @@ a{color:inherit;text-decoration:none}
       <p class="hero-sub">EXEC8 gives you the components — math, rules, probability — to build an execution system you don't break. No signals. No opinions. Just data and rules.</p>
       <div class="hero-ctas">
         <a href="#start" class="btn btn-primary">Start with your data <span class="btn-arrow">→</span></a>
-        <a href="#system" class="btn btn-ghost">See how it works</a>
+        <a href="#how" class="btn btn-ghost">See how it works</a>
       </div>
     </div>
     <aside class="hero-aside">
@@ -337,6 +374,72 @@ a{color:inherit;text-decoration:none}
         <div class="system-rules-line">EXEC8 forces repeatable execution.</div>
       </div>
     </div>
+  </div>
+</section>
+
+
+<section class="howitworks" id="how">
+  <div class="howitworks-inner">
+
+    <div class="howitworks-head">
+      <span class="kicker">— How it works —</span>
+      <h2 style="margin-top:24px">You can't fix what you've<br>never <em>measured.</em></h2>
+    </div>
+
+    <div class="howitworks-opener">
+      <p class="howitworks-opener-stat">Ask <strong>100 retail traders</strong> what their actual win rate is across their last 30 trades. <em>Maybe 5</em> will tell you. Of those 5, <em>maybe 1</em> will be right.</p>
+      <p class="howitworks-opener-tail">Most traders don't lose because their strategies are wrong. They lose because they've never measured what's actually happening. They trade for years on memory, gut feel, and the wins they remember more vividly than the losses. Without data, every decision becomes an opinion. And opinions don't compound.</p>
+    </div>
+
+    <div class="mechanism">
+      <div class="mechanism-side">
+        <div class="mechanism-label bad">Without a system</div>
+        <div class="mechanism-title">The loop most traders are stuck in.</div>
+        <div class="mechanism-flow">
+          <div class="mechanism-step">Take a trade on feel</div>
+          <div class="mechanism-step">Win or lose, don't measure</div>
+          <div class="mechanism-step">Size the next one by mood</div>
+          <div class="mechanism-step">Hit a loss</div>
+          <div class="mechanism-step">Revenge-trade to recover</div>
+          <div class="mechanism-step">Bigger loss</div>
+          <div class="mechanism-step terminal">"My strategy doesn't work."</div>
+        </div>
+      </div>
+      <div class="mechanism-side">
+        <div class="mechanism-label good">With EXEC8</div>
+        <div class="mechanism-title">The loop you build instead.</div>
+        <div class="mechanism-flow">
+          <div class="mechanism-step">Measure your real numbers</div>
+          <div class="mechanism-step">Size by Kelly, not by feel</div>
+          <div class="mechanism-step">Set rules before the trade</div>
+          <div class="mechanism-step">Take the trade. Follow the rules.</div>
+          <div class="mechanism-step">Log the outcome. Update the data.</div>
+          <div class="mechanism-step loop">Repeat with sharper numbers.</div>
+          <div class="mechanism-step terminal-good">Strategy gets a fair test.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="principles-grid">
+      <div class="principle">
+        <div class="principle-num">/ 01</div>
+        <div class="principle-title">Win Rate Engine</div>
+        <div class="principle-text">"You can't improve what you don't measure."</div>
+      </div>
+      <div class="principle">
+        <div class="principle-num">/ 02</div>
+        <div class="principle-title">Kelly Engine</div>
+        <div class="principle-text">"You can't size correctly by feel. The math has an answer."</div>
+      </div>
+      <div class="principle">
+        <div class="principle-num">/ 03</div>
+        <div class="principle-title">Execution Tracker</div>
+        <div class="principle-text">"You can't fix discipline without seeing where you break."</div>
+      </div>
+    </div>
+
+    <p class="howitworks-closer">Same trader. Same strategy. Different outcome.<br>The strategies don't change. <em>The trader does.</em></p>
+
   </div>
 </section>
 
@@ -555,7 +658,7 @@ a{color:inherit;text-decoration:none}
 const io = new IntersectionObserver((entries) => {
   entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('is-visible'); });
 }, { threshold: 0.1 });
-document.querySelectorAll('.section, .manifesto, .waitlist, .founder, .system-statement, .fail-section').forEach(el => {
+document.querySelectorAll('.section, .manifesto, .waitlist, .founder, .system-statement, .fail-section, .howitworks').forEach(el => {
   el.classList.add('reveal');
   io.observe(el);
 });
