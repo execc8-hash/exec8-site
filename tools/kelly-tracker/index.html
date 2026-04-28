@@ -1,0 +1,1272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kelly tracker · EXEC8</title>
+<meta name="description" content="Position sizing calculator and trade journal. Built by EXEC8.">
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=JetBrains+Mono:wght@400;500&family=Inter+Tight:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg: #0B0E1A;
+    --bg-2: #0F1226;
+    --bg-3: #161A2F;
+    --rule: #1F2438;
+    --rule-2: #2A2F4A;
+    --ink: #F4EFE0;
+    --ink-2: #C5C2B5;
+    --ink-3: #7A7E94;
+    --ink-4: #4F536A;
+    --acc: #C9A961;
+    --acc-2: #E2C786;
+    --warn: #D4956A;
+    --pos: #9CB87C;
+    --neg: #C46B6B;
+    --serif: 'Cormorant Garamond', Georgia, serif;
+    --sans: 'Inter Tight', -apple-system, BlinkMacSystemFont, sans-serif;
+    --mono: 'JetBrains Mono', ui-monospace, Menlo, monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--ink);
+    min-height: 100vh;
+    padding: 24px 20px 60px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    font-weight: 400;
+  }
+  .container { max-width: 1240px; margin: 0 auto; }
+
+  .topnav {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 0 0 28px;
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 40px;
+  }
+  .topnav .brand {
+    font-family: var(--mono); font-size: 13px; font-weight: 500;
+    letter-spacing: 0.22em; color: var(--ink); text-decoration: none;
+  }
+  .topnav .brand-mark { color: var(--acc); }
+  .topnav .back {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--ink-3); text-decoration: none;
+    transition: color 0.2s;
+  }
+  .topnav .back:hover { color: var(--acc); }
+
+  header {
+    padding: 12px 0 32px;
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 32px;
+  }
+  .eyebrow {
+    font-family: var(--mono); font-size: 11px; color: var(--ink-3);
+    letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 18px;
+  }
+  h1 {
+    font-family: var(--serif); font-size: clamp(34px, 5vw, 48px);
+    font-weight: 300; line-height: 1.05; letter-spacing: -0.025em;
+    color: var(--ink); margin-bottom: 14px;
+  }
+  h1 em { font-style: italic; color: var(--acc); font-weight: 400; }
+  header p {
+    color: var(--ink-2); font-size: 15px; line-height: 1.6;
+    max-width: 640px;
+  }
+
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 18px; }
+  .grid-full { grid-column: 1 / -1; }
+  @media (max-width: 768px) { .grid { grid-template-columns: 1fr; } }
+
+  .card {
+    background: var(--bg-2);
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    padding: 28px;
+  }
+  .card h2 {
+    font-family: var(--serif); font-size: 22px; font-weight: 300;
+    color: var(--ink); margin-bottom: 20px;
+    letter-spacing: -0.015em; line-height: 1.2;
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  }
+  .card h2 em { font-style: italic; color: var(--acc); font-weight: 400; }
+  .card h2 .badge {
+    background: transparent; color: var(--ink-3);
+    border: 1px solid var(--rule-2);
+    padding: 4px 10px; border-radius: 1px;
+    font-size: 10px; font-weight: 500;
+    font-family: var(--mono); letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .card h2 .live-badge {
+    background: var(--bg-3); color: var(--acc);
+    border: 1px solid var(--acc);
+    padding: 3px 10px; border-radius: 1px;
+    font-size: 9px; font-weight: 500;
+    font-family: var(--mono); letter-spacing: 0.14em;
+    text-transform: uppercase;
+    animation: pulse 2.4s ease-in-out infinite;
+  }
+  .card h2 .open-badge {
+    background: var(--bg-3); color: var(--warn);
+    border: 1px solid var(--warn);
+    padding: 3px 10px; border-radius: 1px;
+    font-size: 9px; font-weight: 500;
+    font-family: var(--mono); letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+  .form-group { margin-bottom: 16px; }
+  label {
+    display: block; font-size: 10px; color: var(--ink-3);
+    margin-bottom: 8px; text-transform: uppercase;
+    letter-spacing: 0.14em; font-family: var(--mono);
+    font-weight: 500;
+  }
+  input, select, textarea {
+    width: 100%; padding: 11px 13px;
+    background: var(--bg-3);
+    border: 1px solid var(--rule);
+    border-radius: 1px; color: var(--ink);
+    font-size: 14px; font-family: var(--mono);
+    transition: border-color 0.2s;
+    font-variant-numeric: tabular-nums;
+  }
+  input:focus, select:focus, textarea:focus {
+    outline: none; border-color: var(--acc);
+  }
+
+  button {
+    background: transparent; color: var(--ink);
+    border: 1px solid var(--rule-2);
+    padding: 11px 18px; border-radius: 1px;
+    cursor: pointer; font-size: 11px;
+    font-weight: 500; font-family: var(--mono);
+    letter-spacing: 0.1em; text-transform: uppercase;
+    transition: all 0.25s;
+  }
+  button:hover {
+    border-color: var(--ink-2); background: var(--bg-3);
+  }
+  button.secondary { color: var(--ink-2); }
+  button.success {
+    background: var(--acc); color: var(--bg);
+    border-color: var(--acc); font-weight: 500;
+  }
+  button.success:hover {
+    background: var(--acc-2); border-color: var(--acc-2);
+  }
+  button.danger {
+    color: var(--neg); border-color: var(--neg);
+  }
+  button.danger:hover {
+    background: var(--neg); color: var(--bg);
+  }
+  button.warning {
+    color: var(--warn); border-color: var(--warn);
+  }
+  button.warning:hover {
+    background: var(--warn); color: var(--bg);
+  }
+
+  .kelly-selector {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-top: 12px;
+    margin-bottom: 12px;
+  }
+  .kelly-option {
+    background: var(--bg-3);
+    border: 1px solid var(--rule);
+    border-radius: 1px;
+    padding: 14px 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .kelly-option:hover { border-color: var(--rule-2); }
+  .kelly-option.selected {
+    border-color: var(--acc);
+    background: rgba(201, 169, 97, 0.06);
+  }
+  .kelly-option.aggressive { border-color: var(--rule-2); }
+  .kelly-option.aggressive:hover {
+    border-color: var(--warn);
+    background: rgba(212, 149, 106, 0.05);
+  }
+  .kelly-option.aggressive.selected {
+    border-color: var(--warn);
+    background: rgba(212, 149, 106, 0.08);
+  }
+  .kelly-option .label {
+    font-size: 10px; color: var(--ink-3);
+    text-transform: uppercase; margin-bottom: 6px;
+    letter-spacing: 0.12em; font-family: var(--mono);
+    font-weight: 500;
+  }
+  .kelly-option.selected .label { color: var(--acc); }
+  .kelly-option.aggressive .label { color: var(--warn); }
+  .kelly-option .pct {
+    font-size: 18px; font-weight: 500;
+    color: var(--ink); font-family: var(--mono);
+    letter-spacing: -0.01em;
+    font-variant-numeric: tabular-nums;
+  }
+  .kelly-option.selected .pct { color: var(--acc); }
+  .kelly-option.aggressive .pct { color: var(--warn); }
+  .kelly-option .desc {
+    font-size: 11px; color: var(--ink-3);
+    margin-top: 6px; line-height: 1.4;
+  }
+  .kelly-option .drawdown {
+    font-size: 10px; color: var(--ink-4);
+    margin-top: 4px; font-family: var(--mono);
+    letter-spacing: 0.04em;
+  }
+  .kelly-option.aggressive .drawdown { color: var(--warn); }
+
+  .drawdown-explainer {
+    background: var(--bg-3);
+    border: 1px solid var(--rule);
+    border-left: 1px solid var(--acc);
+    border-radius: 2px;
+    padding: 14px 16px;
+    margin: 8px 0 14px 0;
+    font-size: 12px;
+    color: var(--ink-2);
+    line-height: 1.65;
+  }
+  .drawdown-explainer strong {
+    color: var(--acc);
+    display: block;
+    margin-bottom: 6px;
+    font-size: 10px;
+    font-family: var(--mono);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  .full-kelly-warning {
+    background: var(--bg-3);
+    border: 1px solid var(--rule);
+    border-left: 1px solid var(--neg);
+    border-radius: 2px;
+    padding: 14px 16px;
+    margin-top: 8px;
+    margin-bottom: 14px;
+    font-size: 12px;
+    color: var(--ink-2);
+    line-height: 1.65;
+  }
+  .full-kelly-warning strong {
+    color: var(--neg);
+    display: block;
+    margin-bottom: 6px;
+    font-size: 10px;
+    font-family: var(--mono);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  .stat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--rule); border: 1px solid var(--rule); border-radius: 2px; }
+  .stat {
+    background: var(--bg-2);
+    padding: 18px 16px;
+  }
+  .stat-label {
+    font-size: 10px; color: var(--ink-3);
+    text-transform: uppercase; margin-bottom: 8px;
+    letter-spacing: 0.14em; font-family: var(--mono);
+    font-weight: 500;
+  }
+  .stat-value {
+    font-size: 22px; font-weight: 400;
+    color: var(--ink); font-family: var(--mono);
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+  }
+  .stat-value.green { color: var(--pos); }
+  .stat-value.red { color: var(--neg); }
+  .stat-value.accent { color: var(--acc); }
+  .stat-value.amber { color: var(--warn); }
+
+  .kelly-output {
+    background: var(--bg-3);
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    padding: 16px;
+    margin-top: 14px;
+  }
+  .kelly-row {
+    display: flex; justify-content: space-between;
+    padding: 9px 0; border-bottom: 1px solid var(--rule);
+  }
+  .kelly-row:last-child { border-bottom: none; }
+  .kelly-row .label {
+    color: var(--ink-3); font-size: 12px;
+    font-family: var(--mono); letter-spacing: 0.04em;
+  }
+  .kelly-row .value {
+    color: var(--ink); font-weight: 500;
+    font-size: 13px; font-family: var(--mono);
+    font-variant-numeric: tabular-nums;
+  }
+  .kelly-row.active {
+    background: rgba(201, 169, 97, 0.06);
+    border-radius: 1px;
+    padding: 9px 12px;
+    border-bottom: none;
+  }
+  .kelly-row.active .label { color: var(--acc); font-weight: 500; }
+  .kelly-row.active .value { color: var(--acc); }
+
+  .position-output {
+    background: var(--bg-3);
+    border: 1px solid var(--rule);
+    border-left: 1px solid var(--acc);
+    border-radius: 2px;
+    padding: 18px;
+    margin-top: 14px;
+  }
+  .position-output.warning-bg {
+    border-left-color: var(--neg);
+  }
+  .position-row {
+    display: flex; justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  .position-row:last-child { margin-bottom: 0; }
+  .position-row .label {
+    color: var(--ink-3); font-size: 12px;
+    font-family: var(--mono); letter-spacing: 0.04em;
+  }
+  .position-row .value {
+    color: var(--pos); font-weight: 500;
+    font-size: 14px; font-family: var(--mono);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .trade-warning {
+    background: var(--bg-3);
+    border: 1px solid var(--neg);
+    color: var(--neg);
+    padding: 12px 14px;
+    border-radius: 2px;
+    font-size: 12px;
+    margin-top: 12px;
+    font-family: var(--mono);
+    line-height: 1.6;
+    letter-spacing: 0.02em;
+  }
+
+  table {
+    width: 100%; border-collapse: collapse;
+    font-size: 12px; font-family: var(--mono);
+  }
+  thead { background: var(--bg-3); }
+  th {
+    text-align: left; padding: 12px 14px;
+    color: var(--ink-3); font-weight: 500;
+    text-transform: uppercase; font-size: 10px;
+    letter-spacing: 0.14em;
+    border-bottom: 1px solid var(--rule);
+  }
+  td {
+    padding: 12px 14px; border-bottom: 1px solid var(--rule);
+    color: var(--ink-2); font-variant-numeric: tabular-nums;
+  }
+  tr:hover { background: var(--bg-3); }
+  tr.open-trade {
+    background: rgba(212, 149, 106, 0.04);
+  }
+  tr.open-trade:hover {
+    background: rgba(212, 149, 106, 0.08);
+  }
+  .win { color: var(--pos); font-weight: 500; }
+  .loss { color: var(--neg); font-weight: 500; }
+  .be { color: var(--ink-3); font-weight: 500; }
+  .open { color: var(--warn); font-weight: 500; }
+
+  .action-row {
+    display: flex; gap: 12px; flex-wrap: wrap;
+    margin-top: 18px;
+  }
+
+  .rules-card {
+    background: var(--bg-2);
+    border: 1px solid var(--rule);
+    border-left: 1px solid var(--acc);
+  }
+  .rules-list { list-style: none; padding: 0; }
+  .rules-list li {
+    padding: 9px 0; padding-left: 28px;
+    color: var(--ink-2); font-size: 14px;
+    position: relative; line-height: 1.5;
+  }
+  .rules-list li:before {
+    content: counter(rule-counter, decimal-leading-zero);
+    counter-increment: rule-counter;
+    position: absolute; left: 0; top: 9px;
+    color: var(--acc); font-family: var(--mono);
+    font-size: 11px; font-weight: 500;
+    letter-spacing: 0.04em;
+  }
+  .rules-list { counter-reset: rule-counter; }
+
+  .progress-bar {
+    background: var(--bg-3);
+    border: 1px solid var(--rule);
+    border-radius: 1px;
+    height: 28px;
+    overflow: hidden;
+    position: relative;
+    margin-top: 10px;
+  }
+  .progress-fill {
+    background: var(--acc);
+    height: 100%;
+    transition: width 0.4s ease;
+  }
+  .progress-text {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 11px; color: var(--ink);
+    font-weight: 500; font-family: var(--mono);
+    letter-spacing: 0.1em; text-transform: uppercase;
+    mix-blend-mode: difference;
+  }
+
+  .empty-state {
+    text-align: center; padding: 48px 20px;
+    color: var(--ink-3); font-size: 14px;
+    font-family: var(--serif); font-style: italic;
+    font-weight: 300;
+  }
+
+  .delete-btn {
+    background: transparent; color: var(--ink-3);
+    border: none; cursor: pointer;
+    padding: 4px 10px; font-size: 16px;
+    transition: color 0.2s;
+    text-transform: none; letter-spacing: 0;
+  }
+  .delete-btn:hover { color: var(--neg); }
+
+  .close-btn {
+    background: transparent; color: var(--warn);
+    border: 1px solid var(--warn);
+    cursor: pointer; padding: 5px 12px;
+    font-size: 10px; border-radius: 1px;
+    margin-right: 6px; font-family: var(--mono);
+    letter-spacing: 0.1em; text-transform: uppercase;
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+  .close-btn:hover {
+    background: var(--warn); color: var(--bg);
+  }
+
+  .note {
+    font-size: 12px; color: var(--ink-3);
+    margin-top: 10px; line-height: 1.6;
+    font-family: var(--serif); font-style: italic;
+    font-weight: 300;
+  }
+
+  .modal-overlay {
+    display: none; position: fixed; top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(11, 14, 26, 0.85);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 100;
+    justify-content: center; align-items: center;
+    padding: 20px;
+  }
+  .modal-overlay.active { display: flex; }
+  .modal {
+    background: var(--bg-2);
+    border: 1px solid var(--rule-2);
+    border-radius: 2px;
+    padding: 32px;
+    max-width: 560px; width: 100%;
+    max-height: 90vh; overflow-y: auto;
+  }
+  .modal h3 {
+    font-family: var(--serif); font-size: 24px;
+    font-weight: 300; color: var(--ink);
+    margin-bottom: 18px; letter-spacing: -0.015em;
+  }
+  .modal-actions {
+    display: flex; gap: 12px;
+    margin-top: 20px;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+  }
+
+  .open-trades-card {
+    background: var(--bg-2);
+    border: 1px solid var(--rule);
+    border-left: 1px solid var(--warn);
+  }
+
+  .warning-modal {
+    border-left: 1px solid var(--warn);
+    border-color: var(--warn);
+  }
+  .warning-modal h3 {
+    color: var(--warn);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .warning-modal .warning-content {
+    background: var(--bg-3);
+    border: 1px solid var(--rule);
+    border-radius: 2px; padding: 18px;
+    margin-bottom: 18px;
+  }
+  .warning-modal .warning-content p {
+    color: var(--ink-2); font-size: 13px;
+    margin-bottom: 12px; line-height: 1.65;
+  }
+  .warning-modal .warning-content p:last-child { margin-bottom: 0; }
+  .warning-modal .warning-content strong { color: var(--warn); }
+  .warning-modal ul { list-style: none; padding: 0; margin: 12px 0; }
+  .warning-modal ul li {
+    padding: 6px 0; padding-left: 20px;
+    position: relative;
+    color: var(--ink-2); font-size: 13px;
+    line-height: 1.5;
+  }
+  .warning-modal ul li:before {
+    content: ""; position: absolute; left: 0; top: 14px;
+    width: 6px; height: 1px; background: var(--warn);
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <nav class="topnav">
+    <a href="/" class="brand">EXEC<span class="brand-mark">8</span></a>
+    <a href="/" class="back">← Back to home</a>
+  </nav>
+
+  <header>
+    <div class="eyebrow">Tool 02 / Tracker</div>
+    <h1>Kelly <em>tracker.</em></h1>
+    <p>Position sizing calculator and trade journal. Half-Kelly requires confirmation. Full Kelly is disabled — the math doesn't support it for any retail trader. Your data is saved locally in your browser.</p>
+  </header>
+
+  <div class="card">
+    <h2>Account overview <span class="badge" id="progressBadge">0 / 20 trades</span></h2>
+    <div class="stat-grid">
+      <div class="stat">
+        <div class="stat-label">Starting Balance</div>
+        <div class="stat-value" id="startBalance">$900.00</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Current Balance</div>
+        <div class="stat-value accent" id="currentBalance">$900.00</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Total P/L (closed)</div>
+        <div class="stat-value" id="totalPL">$0.00</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Return %</div>
+        <div class="stat-value" id="returnPct">0.00%</div>
+      </div>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+      <div class="progress-text" id="progressText">0 / 20 trades</div>
+    </div>
+    <div class="form-group" style="margin-top: 18px;">
+      <label>Update starting balance (only if not started)</label>
+      <div style="display: flex; gap: 10px;">
+        <input type="number" id="editStart" step="0.01" placeholder="900.00">
+        <button class="secondary" onclick="updateStartBalance()">Update</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid" style="margin-top: 20px;">
+    <div class="card">
+      <h2>Kelly <em>calculator</em> <span class="live-badge">Live</span></h2>
+      <div class="form-group">
+        <label>Win Rate (%)</label>
+        <input type="number" id="winRate" step="0.1" min="0" max="100" value="55">
+        <div class="note">Assumed 55% until you have 20+ trades of data</div>
+      </div>
+      <div class="form-group">
+        <label>Average Reward-to-Risk Ratio</label>
+        <input type="number" id="rrRatio" step="0.1" min="0" value="2">
+        <div class="note">Your target R:R on average trade</div>
+      </div>
+
+      <label style="margin-top: 12px;">Choose Your Kelly Fraction</label>
+      <div class="kelly-selector" id="kellySelector">
+        <div class="kelly-option" data-fraction="0.0625" onclick="selectKelly(0.0625)">
+          <div class="label">1/16 Kelly</div>
+          <div class="pct" id="opt-1-16">2.03%</div>
+          <div class="desc">Capital preservation</div>
+          <div class="drawdown">~3% max DD</div>
+        </div>
+        <div class="kelly-option" data-fraction="0.125" onclick="selectKelly(0.125)">
+          <div class="label">1/8 Kelly</div>
+          <div class="pct" id="opt-1-8">4.06%</div>
+          <div class="desc">Compound growth</div>
+          <div class="drawdown">~8% max DD</div>
+        </div>
+        <div class="kelly-option selected" data-fraction="0.25" onclick="selectKelly(0.25)">
+          <div class="label">1/4 Kelly</div>
+          <div class="pct" id="opt-1-4">8.13%</div>
+          <div class="desc">Standard discipline</div>
+          <div class="drawdown">~18% max DD</div>
+        </div>
+      </div>
+
+      <div class="kelly-selector" style="grid-template-columns: 1fr;">
+        <div class="kelly-option aggressive" data-fraction="0.5" onclick="selectKellyHalf()">
+          <div class="label">1/2 Kelly · High Conviction Only</div>
+          <div class="pct" id="opt-1-2">16.25%</div>
+          <div class="desc">Aggressive — for proven traders only</div>
+          <div class="drawdown">~50% max drawdown expected</div>
+        </div>
+      </div>
+
+      <div class="drawdown-explainer">
+        <strong>What "max DD" actually means</strong>
+        Max DD = maximum account decline from peak before recovery, expected over many trades. This is NOT per single trade. Example: at 1/4 Kelly, you risk ~8% per trade, but a string of losses could pull your account ~18% from its peak before it recovers. The drawdown will likely happen at some point if you trade enough. Your job is to hold through it without abandoning the system.
+      </div>
+
+      <div class="full-kelly-warning">
+        <strong>Full Kelly (32.50%) — Not Available</strong>
+        Full Kelly mathematically guarantees ~80% drawdowns over time. No human trader should run Full Kelly. We don't allow it because the math doesn't support it for any user.
+      </div>
+
+      <div class="kelly-output">
+        <div class="kelly-row">
+          <span class="label">Full Kelly (reference only)</span>
+          <span class="value" id="fullKelly">32.50%</span>
+        </div>
+        <div class="kelly-row active" id="activeKellyRow">
+          <span class="label" id="activeKellyLabel">Active: 1/4 Kelly</span>
+          <span class="value" id="activeKellyValue">8.13%</span>
+        </div>
+        <div class="kelly-row">
+          <span class="label">Risk per Trade ($)</span>
+          <span class="value" id="riskPerTrade">$73.13</span>
+        </div>
+      </div>
+      <div class="note" style="margin-top: 14px;">
+        Lower fractions = safer, slower compounding. Higher fractions = bigger drawdowns, faster compounding.
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Position <em>sizer</em> <span class="live-badge">Live</span></h2>
+      <div class="form-group">
+        <label>Entry Price ($)</label>
+        <input type="number" id="entryPrice" step="0.0001" placeholder="0.2000">
+      </div>
+      <div class="form-group">
+        <label>Stop Loss Price ($)</label>
+        <input type="number" id="stopPrice" step="0.0001" placeholder="0.1700">
+      </div>
+      <div class="form-group">
+        <label>Target Price ($)</label>
+        <input type="number" id="targetPrice" step="0.0001" placeholder="0.2700">
+      </div>
+      <div class="position-output" id="positionOutput">
+        <div class="position-row">
+          <span class="label">Stop Distance</span>
+          <span class="value" id="stopDistance">—</span>
+        </div>
+        <div class="position-row">
+          <span class="label">Position Size ($)</span>
+          <span class="value" id="positionSize">—</span>
+        </div>
+        <div class="position-row">
+          <span class="label">Tokens</span>
+          <span class="value" id="tokenAmount">—</span>
+        </div>
+        <div class="position-row">
+          <span class="label">Risk ($)</span>
+          <span class="value" id="riskAmount">—</span>
+        </div>
+        <div class="position-row">
+          <span class="label">Reward Target ($)</span>
+          <span class="value" id="rewardAmount">—</span>
+        </div>
+        <div class="position-row">
+          <span class="label">R:R Ratio</span>
+          <span class="value" id="actualRR">—</span>
+        </div>
+      </div>
+      <div class="trade-warning" id="rrWarning" style="display: none;">
+        R:R below 1.5:1 — this trade has poor reward-to-risk math. Consider adjusting target or skipping.
+      </div>
+      <div class="action-row">
+        <button class="success" onclick="fillTradeLogger()">Use these numbers in trade logger ↓</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card rules-card" style="margin-top: 20px;">
+    <h2>The seven non-negotiable <em>rules</em></h2>
+    <ul class="rules-list">
+      <li>Maximum 1 open position at a time</li>
+      <li>Stop loss set as market order BEFORE entry confirmation</li>
+      <li>Three exits only: stop, target, or 72-hour time stop</li>
+      <li>Stops only move to breakeven (after halfway to target) or trail up</li>
+      <li>No position additions, no averaging down, one entry per setup</li>
+      <li>24-hour cooling period after any loss</li>
+      <li>Weekly Sunday review is mandatory (even if zero trades)</li>
+    </ul>
+  </div>
+
+  <div class="card open-trades-card" id="openTradesCard" style="margin-top: 20px; display: none;">
+    <h2>Open trades <span class="open-badge">Active</span></h2>
+    <div style="overflow-x: auto;">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th><th>Date Opened</th><th>Setup</th><th>Dir</th>
+            <th>Entry</th><th>Stop</th><th>Target</th>
+            <th>Position $</th><th>Risk $</th><th>Kelly</th>
+            <th>Notes</th><th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="openTradesBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top: 20px;" id="tradeLoggerCard">
+    <h2>Log a trade <em>entry</em></h2>
+    <div class="note" style="margin-bottom: 18px;">
+      Log when you enter the trade. Update the outcome and exit when the trade closes.
+    </div>
+    <div class="grid">
+      <div class="form-group">
+        <label>Trade Date</label>
+        <input type="date" id="tradeDate">
+      </div>
+      <div class="form-group">
+        <label>Setup Type</label>
+        <select id="setupType">
+          <option value="Support Bounce">Support Bounce</option>
+          <option value="Resistance Rejection">Resistance Rejection</option>
+          <option value="Breakout Retest">Breakout Retest</option>
+          <option value="Trend Pullback">Trend Pullback</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Direction</label>
+        <select id="tradeDirection">
+          <option value="Long">Long</option>
+          <option value="Short">Short</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Asset</label>
+        <input type="text" id="tradeAsset" value="CFG">
+      </div>
+      <div class="form-group">
+        <label>Entry ($)</label>
+        <input type="number" id="tradeEntry" step="0.0001">
+      </div>
+      <div class="form-group">
+        <label>Stop ($)</label>
+        <input type="number" id="tradeStop" step="0.0001">
+      </div>
+      <div class="form-group">
+        <label>Target ($)</label>
+        <input type="number" id="tradeTarget" step="0.0001">
+      </div>
+      <div class="form-group">
+        <label>Position Size ($)</label>
+        <input type="number" id="tradePosition" step="0.01">
+      </div>
+      <div class="form-group">
+        <label>Kelly Fraction Used</label>
+        <select id="tradeKellyFraction">
+          <option value="0.0625">1/16 Kelly (Capital Preservation)</option>
+          <option value="0.125">1/8 Kelly (Compound Growth)</option>
+          <option value="0.25" selected>1/4 Kelly (Standard Discipline)</option>
+          <option value="0.5">1/2 Kelly (High Conviction)</option>
+        </select>
+      </div>
+      <div class="form-group grid-full">
+        <label>Notes (emotional state, setup confluence, observations)</label>
+        <input type="text" id="tradeNotes" placeholder="Why you took this trade, how it feels, market context">
+      </div>
+    </div>
+    <button class="success" onclick="logTradeEntry()">Open trade →</button>
+  </div>
+
+  <div class="card" style="margin-top: 20px;">
+    <h2>Running <em>statistics</em> (closed trades)</h2>
+    <div class="stat-grid" style="grid-template-columns: repeat(4, 1fr);">
+      <div class="stat"><div class="stat-label">Closed Trades</div><div class="stat-value" id="tradesCount">0</div></div>
+      <div class="stat"><div class="stat-label">Win Rate</div><div class="stat-value accent" id="actualWinRate">—</div></div>
+      <div class="stat"><div class="stat-label">Wins / Losses</div><div class="stat-value" id="winLossCount">0 / 0</div></div>
+      <div class="stat"><div class="stat-label">Avg R (Winners)</div><div class="stat-value green" id="avgRWins">—</div></div>
+      <div class="stat"><div class="stat-label">Avg R (Losers)</div><div class="stat-value red" id="avgRLosses">—</div></div>
+      <div class="stat"><div class="stat-label">Total R</div><div class="stat-value" id="totalR">—</div></div>
+      <div class="stat"><div class="stat-label">Expected Value</div><div class="stat-value" id="expectedValue">—</div></div>
+      <div class="stat"><div class="stat-label">Largest Drawdown</div><div class="stat-value red" id="maxDrawdown">0%</div></div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top: 20px;">
+    <h2>Trade <em>history</em> (closed)</h2>
+    <div style="overflow-x: auto;">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th><th>Date</th><th>Setup</th><th>Dir</th>
+            <th>Entry</th><th>Stop</th><th>Target</th><th>Exit</th>
+            <th>Size</th><th>Kelly</th><th>P/L $</th><th>R</th><th>Outcome</th>
+            <th>Notes</th><th></th>
+          </tr>
+        </thead>
+        <tbody id="tradesBody">
+          <tr><td colspan="15" class="empty-state">No closed trades yet. Closed trades will appear here.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="action-row">
+      <button class="secondary" onclick="exportCSV()">↓ Export CSV</button>
+      <button class="danger" onclick="resetAll()">Reset all data</button>
+    </div>
+    <div class="note" style="margin-top: 18px;">
+      Your data is saved automatically in your browser. Export weekly as backup. Resetting is permanent.
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="halfKellyWarningModal">
+  <div class="modal warning-modal">
+    <h3>⚠ You're selecting Half Kelly</h3>
+    <div class="warning-content">
+      <p><strong>The math at 1/2 Kelly:</strong></p>
+      <p>Even with a verified 55% win rate and 2:1 R:R, this sizing produces approximately <strong>50% maximum drawdowns</strong> over time. Math says so — it's not avoidable at this fraction.</p>
+      <p><strong>Most traders cannot psychologically hold through a 50% account drawdown.</strong> They panic-close, abandon their system, or revenge trade their way to a blown account.</p>
+      <p><strong>Recommended only if you have:</strong></p>
+      <ul>
+        <li>100+ verified profitable trades on logged data</li>
+        <li>Edge confirmed across multiple market conditions</li>
+        <li>Demonstrated capacity to hold through 50% drawdowns without panic</li>
+        <li>Capital you can afford to lose half of without affecting your life</li>
+      </ul>
+      <p>If you're not sure whether you meet all four, pick 1/4 Kelly. You'll compound just fine and sleep at night.</p>
+    </div>
+    <div class="modal-actions">
+      <button class="secondary" onclick="cancelHalfKelly()">Use 1/4 Kelly instead</button>
+      <button class="warning" onclick="confirmHalfKelly()">I understand, proceed</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="closeTradeModal">
+  <div class="modal">
+    <h3>Close trade</h3>
+    <div class="form-group">
+      <label>Exit Price ($)</label>
+      <input type="number" id="modalExitPrice" step="0.0001">
+    </div>
+    <div class="form-group">
+      <label>Outcome</label>
+      <select id="modalOutcome">
+        <option value="win">Win (hit target)</option>
+        <option value="loss">Loss (hit stop)</option>
+        <option value="breakeven">Breakeven</option>
+        <option value="partial">Partial (exit before target)</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Closing Notes (what happened)</label>
+      <textarea id="modalCloseNotes" rows="3" placeholder="How did the trade play out? Did you follow rules?"></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="secondary" onclick="cancelCloseTrade()">Cancel</button>
+      <button class="success" onclick="confirmCloseTrade()">Close trade</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  let state = JSON.parse(localStorage.getItem('kellyTracker')) || {
+    startBalance: 900, trades: [], openTrades: [], selectedKellyFraction: 0.25
+  };
+  if (!state.openTrades) state.openTrades = [];
+  if (!state.selectedKellyFraction) state.selectedKellyFraction = 0.25;
+  let tradeToClose = null;
+  document.getElementById('tradeDate').valueAsDate = new Date();
+
+  function save() {
+    localStorage.setItem('kellyTracker', JSON.stringify(state));
+    updateDisplay();
+    recalculateAll();
+  }
+  function getCurrentBalance() {
+    return state.startBalance + state.trades.reduce((sum, t) => sum + t.pl, 0);
+  }
+  function selectKelly(fraction) {
+    state.selectedKellyFraction = fraction;
+    document.querySelectorAll('.kelly-option').forEach(el => {
+      el.classList.toggle('selected', parseFloat(el.dataset.fraction) === fraction);
+    });
+    document.getElementById('tradeKellyFraction').value = fraction.toString();
+    save();
+  }
+  function selectKellyHalf() {
+    document.getElementById('halfKellyWarningModal').classList.add('active');
+  }
+  function confirmHalfKelly() {
+    document.getElementById('halfKellyWarningModal').classList.remove('active');
+    selectKelly(0.5);
+  }
+  function cancelHalfKelly() {
+    document.getElementById('halfKellyWarningModal').classList.remove('active');
+    selectKelly(0.25);
+  }
+  function getKellyLabel(fraction) {
+    const labels = {
+      0.0625: '1/16 Kelly (Capital Preservation)',
+      0.125: '1/8 Kelly (Compound Growth)',
+      0.25: '1/4 Kelly (Standard Discipline)',
+      0.5: '1/2 Kelly (High Conviction)'
+    };
+    return labels[fraction] || `${fraction} Kelly`;
+  }
+  function getKellyShort(fraction) {
+    const labels = { 0.0625: '1/16', 0.125: '1/8', 0.25: '1/4', 0.5: '1/2' };
+    return labels[fraction] || fraction.toString();
+  }
+  function updateKelly() {
+    const winRate = parseFloat(document.getElementById('winRate').value) / 100;
+    const rr = parseFloat(document.getElementById('rrRatio').value);
+    if (isNaN(winRate) || isNaN(rr) || winRate <= 0 || winRate >= 1 || rr <= 0) {
+      ['fullKelly','riskPerTrade','activeKellyValue','opt-1-16','opt-1-8','opt-1-4','opt-1-2'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = '—';
+      });
+      return null;
+    }
+    const fullKelly = winRate - ((1 - winRate) / rr);
+    const currentBal = getCurrentBalance();
+    document.getElementById('opt-1-16').textContent = (fullKelly * 0.0625 * 100).toFixed(2) + '%';
+    document.getElementById('opt-1-8').textContent = (fullKelly * 0.125 * 100).toFixed(2) + '%';
+    document.getElementById('opt-1-4').textContent = (fullKelly * 0.25 * 100).toFixed(2) + '%';
+    document.getElementById('opt-1-2').textContent = (fullKelly * 0.5 * 100).toFixed(2) + '%';
+    document.getElementById('fullKelly').textContent = (fullKelly * 100).toFixed(2) + '%';
+    const activeKelly = fullKelly * state.selectedKellyFraction;
+    const riskDollar = currentBal * activeKelly;
+    document.getElementById('activeKellyLabel').textContent = `Active: ${getKellyLabel(state.selectedKellyFraction)}`;
+    document.getElementById('activeKellyValue').textContent = (activeKelly * 100).toFixed(2) + '%';
+    document.getElementById('riskPerTrade').textContent = '$' + riskDollar.toFixed(2);
+    return { fullKelly, activeKelly, riskDollar };
+  }
+  function updatePosition() {
+    const kelly = updateKelly();
+    if (!kelly) return;
+    const entry = parseFloat(document.getElementById('entryPrice').value);
+    const stop = parseFloat(document.getElementById('stopPrice').value);
+    const target = parseFloat(document.getElementById('targetPrice').value);
+    const posOut = document.getElementById('positionOutput');
+    const warning = document.getElementById('rrWarning');
+    if (isNaN(entry) || isNaN(stop) || entry <= 0 || stop <= 0 || entry === stop) {
+      ['stopDistance','positionSize','tokenAmount','riskAmount','rewardAmount','actualRR'].forEach(id => {
+        document.getElementById(id).textContent = '—';
+      });
+      posOut.classList.remove('warning-bg');
+      warning.style.display = 'none';
+      return;
+    }
+    const stopDistance = Math.abs(entry - stop) / entry;
+    const positionSize = kelly.riskDollar / stopDistance;
+    const tokens = positionSize / entry;
+    document.getElementById('stopDistance').textContent = (stopDistance * 100).toFixed(2) + '%';
+    document.getElementById('positionSize').textContent = '$' + positionSize.toFixed(2);
+    document.getElementById('tokenAmount').textContent = tokens.toFixed(2);
+    document.getElementById('riskAmount').textContent = '$' + kelly.riskDollar.toFixed(2);
+    if (!isNaN(target) && target > 0 && target !== entry) {
+      const targetDistance = Math.abs(target - entry) / entry;
+      const actualRR = targetDistance / stopDistance;
+      const rewardAmount = positionSize * targetDistance;
+      document.getElementById('rewardAmount').textContent = '$' + rewardAmount.toFixed(2);
+      document.getElementById('actualRR').textContent = actualRR.toFixed(2) + ':1';
+      if (actualRR < 1.5) {
+        posOut.classList.add('warning-bg');
+        warning.style.display = 'block';
+      } else {
+        posOut.classList.remove('warning-bg');
+        warning.style.display = 'none';
+      }
+    } else {
+      document.getElementById('rewardAmount').textContent = '—';
+      document.getElementById('actualRR').textContent = '—';
+      posOut.classList.remove('warning-bg');
+      warning.style.display = 'none';
+    }
+  }
+  function recalculateAll() { updateKelly(); updatePosition(); }
+  function fillTradeLogger() {
+    const entry = parseFloat(document.getElementById('entryPrice').value);
+    const stop = parseFloat(document.getElementById('stopPrice').value);
+    const target = parseFloat(document.getElementById('targetPrice').value);
+    const positionSizeText = document.getElementById('positionSize').textContent;
+    if (isNaN(entry) || isNaN(stop)) { alert('Fill in entry and stop prices first'); return; }
+    document.getElementById('tradeEntry').value = entry;
+    document.getElementById('tradeStop').value = stop;
+    if (!isNaN(target)) document.getElementById('tradeTarget').value = target;
+    document.getElementById('tradeKellyFraction').value = state.selectedKellyFraction.toString();
+    const positionNum = parseFloat(positionSizeText.replace('$', '').replace(',', ''));
+    if (!isNaN(positionNum)) document.getElementById('tradePosition').value = positionNum.toFixed(2);
+    document.getElementById('tradeLoggerCard').scrollIntoView({ behavior: 'smooth' });
+  }
+  function logTradeEntry() {
+    const date = document.getElementById('tradeDate').value;
+    const setup = document.getElementById('setupType').value;
+    const direction = document.getElementById('tradeDirection').value;
+    const asset = document.getElementById('tradeAsset').value;
+    const entry = parseFloat(document.getElementById('tradeEntry').value);
+    const stop = parseFloat(document.getElementById('tradeStop').value);
+    const target = parseFloat(document.getElementById('tradeTarget').value);
+    const position = parseFloat(document.getElementById('tradePosition').value);
+    const kellyFraction = parseFloat(document.getElementById('tradeKellyFraction').value);
+    const notes = document.getElementById('tradeNotes').value;
+    if (!date || isNaN(entry) || isNaN(stop) || isNaN(position)) {
+      alert('Please fill in date, entry, stop, and position size');
+      return;
+    }
+    const tokens = position / entry;
+    const riskDollar = Math.abs(entry - stop) * tokens;
+    const trade = {
+      id: Date.now(),
+      number: state.trades.length + state.openTrades.length + 1,
+      dateOpened: date, setup, direction, asset,
+      entry, stop, target, position, risk: riskDollar, kellyFraction, notes
+    };
+    state.openTrades.push(trade);
+    save();
+    document.getElementById('tradeNotes').value = '';
+    document.getElementById('tradeEntry').value = '';
+    document.getElementById('tradeStop').value = '';
+    document.getElementById('tradeTarget').value = '';
+    document.getElementById('tradePosition').value = '';
+    alert('Trade entry logged. Find it in Open Trades section above.');
+  }
+  function openCloseModal(tradeId) {
+    tradeToClose = tradeId;
+    document.getElementById('modalExitPrice').value = '';
+    document.getElementById('modalOutcome').value = 'win';
+    document.getElementById('modalCloseNotes').value = '';
+    document.getElementById('closeTradeModal').classList.add('active');
+  }
+  function cancelCloseTrade() {
+    tradeToClose = null;
+    document.getElementById('closeTradeModal').classList.remove('active');
+  }
+  function confirmCloseTrade() {
+    const exit = parseFloat(document.getElementById('modalExitPrice').value);
+    const outcome = document.getElementById('modalOutcome').value;
+    const closeNotes = document.getElementById('modalCloseNotes').value;
+    if (isNaN(exit)) { alert('Please enter a valid exit price'); return; }
+    const tradeIndex = state.openTrades.findIndex(t => t.id === tradeToClose);
+    if (tradeIndex === -1) return;
+    const openTrade = state.openTrades[tradeIndex];
+    const tokens = openTrade.position / openTrade.entry;
+    let pl = openTrade.direction === 'Long' ? (exit - openTrade.entry) * tokens : (openTrade.entry - exit) * tokens;
+    const stopDistance = Math.abs(openTrade.entry - openTrade.stop);
+    const exitDistance = openTrade.direction === 'Long' ? exit - openTrade.entry : openTrade.entry - exit;
+    const rMultiple = exitDistance / stopDistance;
+    const closedTrade = {
+      ...openTrade,
+      dateClosed: new Date().toISOString().split('T')[0],
+      exit, outcome, pl, rMultiple,
+      notes: openTrade.notes + (closeNotes ? ' | CLOSE: ' + closeNotes : '')
+    };
+    state.trades.push(closedTrade);
+    state.openTrades.splice(tradeIndex, 1);
+    save();
+    document.getElementById('closeTradeModal').classList.remove('active');
+    tradeToClose = null;
+  }
+  function deleteOpenTrade(id) {
+    if (confirm('Delete this open trade? This cannot be undone.')) {
+      state.openTrades = state.openTrades.filter(t => t.id !== id);
+      save();
+    }
+  }
+  function deleteTrade(id) {
+    if (confirm('Delete this trade? This cannot be undone.')) {
+      state.trades = state.trades.filter(t => t.id !== id);
+      state.trades.forEach((t, i) => t.number = i + 1);
+      save();
+    }
+  }
+  function updateStartBalance() {
+    const newStart = parseFloat(document.getElementById('editStart').value);
+    if (isNaN(newStart) || newStart <= 0) { alert('Enter a valid balance'); return; }
+    if (state.trades.length > 0 || state.openTrades.length > 0) {
+      alert('Cannot change starting balance after logging trades. Reset all data if you need to start over.');
+      return;
+    }
+    state.startBalance = newStart;
+    save();
+    document.getElementById('editStart').value = '';
+  }
+  function resetAll() {
+    if (confirm('This will permanently delete all your trades and reset the tracker. Are you sure?')) {
+      if (confirm('Really sure? This cannot be undone.')) {
+        state = { startBalance: 900, trades: [], openTrades: [], selectedKellyFraction: 0.25 };
+        save();
+      }
+    }
+  }
+  function exportCSV() {
+    if (state.trades.length === 0 && state.openTrades.length === 0) { alert('No trades to export'); return; }
+    const headers = ['#','Status','Date Opened','Date Closed','Setup','Direction','Asset','Entry','Stop','Target','Exit','Position $','Kelly Fraction','P/L $','R Multiple','Outcome','Notes'];
+    const closedRows = state.trades.map(t => [
+      t.number, 'CLOSED', t.dateOpened || t.date || '', t.dateClosed || '', t.setup, t.direction, t.asset,
+      t.entry, t.stop, t.target, t.exit, t.position.toFixed(2),
+      t.kellyFraction ? getKellyShort(t.kellyFraction) : '1/4',
+      t.pl.toFixed(2), t.rMultiple.toFixed(2), t.outcome,
+      `"${(t.notes || '').replace(/"/g, '""')}"`
+    ]);
+    const openRows = state.openTrades.map(t => [
+      t.number, 'OPEN', t.dateOpened, '', t.setup, t.direction, t.asset,
+      t.entry, t.stop, t.target, '', t.position.toFixed(2),
+      t.kellyFraction ? getKellyShort(t.kellyFraction) : '1/4',
+      '', '', 'open',
+      `"${(t.notes || '').replace(/"/g, '""')}"`
+    ]);
+    const csv = [headers.join(','), ...closedRows.map(r => r.join(',')), ...openRows.map(r => r.join(','))].join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `exec8-kelly-${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+  function updateDisplay() {
+    const currentBal = getCurrentBalance();
+    const totalPL = currentBal - state.startBalance;
+    const returnPct = state.startBalance > 0 ? (totalPL / state.startBalance) * 100 : 0;
+    document.getElementById('startBalance').textContent = '$' + state.startBalance.toFixed(2);
+    document.getElementById('currentBalance').textContent = '$' + currentBal.toFixed(2);
+    const plEl = document.getElementById('totalPL');
+    plEl.textContent = (totalPL >= 0 ? '+$' : '-$') + Math.abs(totalPL).toFixed(2);
+    plEl.className = 'stat-value ' + (totalPL >= 0 ? 'green' : 'red');
+    const returnEl = document.getElementById('returnPct');
+    returnEl.textContent = (returnPct >= 0 ? '+' : '') + returnPct.toFixed(2) + '%';
+    returnEl.className = 'stat-value ' + (returnPct >= 0 ? 'green' : 'red');
+    const totalTrades = state.trades.length + state.openTrades.length;
+    const progress = Math.min((totalTrades / 20) * 100, 100);
+    document.getElementById('progressFill').style.width = progress + '%';
+    document.getElementById('progressText').textContent = `${totalTrades} / 20 trades`;
+    document.getElementById('progressBadge').textContent = `${totalTrades} / 20 trades`;
+    const openCard = document.getElementById('openTradesCard');
+    const openBody = document.getElementById('openTradesBody');
+    if (state.openTrades.length === 0) { openCard.style.display = 'none'; }
+    else {
+      openCard.style.display = 'block';
+      openBody.innerHTML = state.openTrades.map(t => `
+        <tr class="open-trade">
+          <td>${t.number}</td><td>${t.dateOpened}</td><td>${t.setup}</td><td>${t.direction}</td>
+          <td>$${t.entry}</td><td>$${t.stop}</td><td>$${t.target || '-'}</td>
+          <td>$${t.position.toFixed(2)}</td><td>$${t.risk.toFixed(2)}</td>
+          <td>${t.kellyFraction ? getKellyShort(t.kellyFraction) : '1/4'}</td>
+          <td title="${t.notes || ''}">${(t.notes || '').length > 25 ? (t.notes || '').substring(0, 25) + '...' : (t.notes || '')}</td>
+          <td>
+            <button class="close-btn" onclick="openCloseModal(${t.id})">Close</button>
+            <button class="delete-btn" onclick="deleteOpenTrade(${t.id})">×</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+    const trades = state.trades;
+    const wins = trades.filter(t => t.outcome === 'win' || (t.outcome === 'partial' && t.pl > 0));
+    const losses = trades.filter(t => t.outcome === 'loss' || (t.outcome === 'partial' && t.pl < 0));
+    document.getElementById('tradesCount').textContent = trades.length;
+    document.getElementById('winLossCount').textContent = `${wins.length} / ${losses.length}`;
+    if (trades.length > 0) {
+      const decisiveTrades = wins.length + losses.length;
+      if (decisiveTrades > 0) {
+        document.getElementById('actualWinRate').textContent = ((wins.length / decisiveTrades) * 100).toFixed(1) + '%';
+      }
+      if (wins.length > 0) {
+        const avgRWin = wins.reduce((s, t) => s + t.rMultiple, 0) / wins.length;
+        document.getElementById('avgRWins').textContent = avgRWin.toFixed(2) + 'R';
+      }
+      if (losses.length > 0) {
+        const avgRLoss = losses.reduce((s, t) => s + t.rMultiple, 0) / losses.length;
+        document.getElementById('avgRLosses').textContent = avgRLoss.toFixed(2) + 'R';
+      }
+      const totalR = trades.reduce((s, t) => s + t.rMultiple, 0);
+      const totalREl = document.getElementById('totalR');
+      totalREl.textContent = (totalR >= 0 ? '+' : '') + totalR.toFixed(2) + 'R';
+      totalREl.className = 'stat-value ' + (totalR >= 0 ? 'green' : 'red');
+      const ev = trades.length > 0 ? totalR / trades.length : 0;
+      const evEl = document.getElementById('expectedValue');
+      evEl.textContent = (ev >= 0 ? '+' : '') + ev.toFixed(2) + 'R';
+      evEl.className = 'stat-value ' + (ev >= 0 ? 'green' : 'red');
+      let peak = state.startBalance;
+      let maxDD = 0;
+      let runningBal = state.startBalance;
+      trades.forEach(t => {
+        runningBal += t.pl;
+        if (runningBal > peak) peak = runningBal;
+        const dd = ((peak - runningBal) / peak) * 100;
+        if (dd > maxDD) maxDD = dd;
+      });
+      document.getElementById('maxDrawdown').textContent = '-' + maxDD.toFixed(2) + '%';
+    }
+    const tbody = document.getElementById('tradesBody');
+    if (trades.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="15" class="empty-state">No closed trades yet. Closed trades will appear here.</td></tr>';
+    } else {
+      tbody.innerHTML = trades.slice().reverse().map(t => {
+        const outcomeClass = t.outcome === 'win' ? 'win' : t.outcome === 'loss' ? 'loss' : 'be';
+        const plDisplay = (t.pl >= 0 ? '+$' : '-$') + Math.abs(t.pl).toFixed(2);
+        const rDisplay = (t.rMultiple >= 0 ? '+' : '') + t.rMultiple.toFixed(2) + 'R';
+        return `<tr>
+          <td>${t.number}</td><td>${t.dateOpened || t.date || ''}</td><td>${t.setup}</td><td>${t.direction}</td>
+          <td>$${t.entry}</td><td>$${t.stop}</td><td>$${t.target || '-'}</td><td>$${t.exit}</td>
+          <td>$${t.position.toFixed(2)}</td>
+          <td>${t.kellyFraction ? getKellyShort(t.kellyFraction) : '1/4'}</td>
+          <td class="${outcomeClass}">${plDisplay}</td>
+          <td class="${outcomeClass}">${rDisplay}</td>
+          <td class="${outcomeClass}">${t.outcome}</td>
+          <td title="${t.notes || ''}">${(t.notes || '').length > 25 ? (t.notes || '').substring(0, 25) + '...' : (t.notes || '')}</td>
+          <td><button class="delete-btn" onclick="deleteTrade(${t.id})">×</button></td>
+        </tr>`;
+      }).join('');
+    }
+  }
+  ['winRate', 'rrRatio', 'entryPrice', 'stopPrice', 'targetPrice'].forEach(id => {
+    document.getElementById(id).addEventListener('input', recalculateAll);
+  });
+  document.querySelectorAll('.kelly-option').forEach(el => {
+    el.classList.toggle('selected', parseFloat(el.dataset.fraction) === state.selectedKellyFraction);
+  });
+  updateDisplay();
+  recalculateAll();
+</script>
+</body>
+</html>
